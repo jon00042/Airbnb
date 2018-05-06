@@ -17,7 +17,7 @@ def create_mock_data():
 
 def index(request):
     # create_mock_data()
-    l = db.get_bookable_listings('2018-03-25', '2018-03-30', db.get_all_listing_ids())
-    pprint(l)
+    # l = db.get_bookable_listings('2018-03-25', '2018-03-30', db.get_all_listing_ids())
+    # pprint(l)
     return render(request, 'main/index.html')
 

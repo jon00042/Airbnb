@@ -1,0 +1,121 @@
+
+.debug, .debug * {
+    border: 1px dotted red;
+}
+
+.debug-one {
+    border: 1px dotted green;
+}
+
+body {
+    font-family: Circular,"Helvetica Neue",Helvetica,Arial,sans-serif;
+    margin: 0 auto;
+}
+
+.nav-bar {
+    border-bottom: 1px solid rgb(228, 228, 228);
+}
+
+@media (max-width: 743px) {
+    .nav-bar > div {
+        display: table;
+        height: 64px;
+    }
+}
+
+@media (min-width: 744px) {
+    .nav-bar > div {
+        display: table;
+        height: 80px;
+    }
+}
+
+.nav-logo-link {
+    display: table-cell;
+    padding-left: 24px;
+    padding-right: 24px;
+    vertical-align: middle;
+}
+
+.nav-logo-dd {
+    display: table-cell;
+    padding-left: 24px;
+    padding-right: 24px;
+    vertical-align: middle;
+}
+
+.nav-search-lg {
+    display: table-cell;
+    vertical-align: middle;
+    width: 720px;
+}
+
+.nav-search-lg > div {
+    border: 1px solid #DBDBDB;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    height: 50px;
+    margin-left: 8px;
+    width: 460px;
+}
+
+.nav-search-lg > div > form > div {
+    float: left;
+    padding-left: 12px;
+    padding-top: 11px;
+}
+
+.nav-search-lg > div > form > input {
+    border: 1px solid white;
+    color: rgb(72, 72, 72);
+    font-size: 19px;
+    line-height: 24px;
+    padding: 11px 11px 11px 11px;
+    width: 422px;
+}
+
+.nav-search-sm {
+    display: table-cell;
+    width: 100%;
+}
+
+.nav-search-sm > div {
+    height: 100%;
+    padding: 10px 12px 5px 8px;
+    width: 100%;
+}
+
+.nav-search-sm > div > button {
+    background: transparent;
+    border: 1px solid #DBDBDB;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    color: rgb(72, 72, 72);
+    height: 100%;
+    width: 100%;
+}
+
+.nav-search-sm > div > button  > div {
+    float: left;
+}
+
+.nav-menu > ul {
+    display: table;
+    margin-bottom: 0;
+}
+
+.nav-menu > ul > li {
+    display: table-cell;
+    font-size: 14px;
+}
+
+.nav-menu > ul > li > button {
+    background: transparent;
+    border-color: white;
+    color: rgb(72, 72, 72);
+    height: 80px;
+    line-height: 14px;
+    margin: 0 8px;
+    padding: 8px 8px;
+    vertical-align: middle;
+    white-space: nowrap;
+}
+

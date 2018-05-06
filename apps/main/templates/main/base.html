@@ -57,7 +57,7 @@
         </div>
     </div>
 
-    <div id="dlg-signup" style="display: none;">
+    <div id="dlg-signup" style="display: none; padding: 32px 32px">
         <div style="margin-bottom: 24px;">
             <button style="border-color: white;">
                 <svg viewBox="0 0 24 24" role="img" aria-label="Close" focusable="false" style="height: 16px; width: 16px; display: block; fill: rgb(118, 118, 118);"><path d="m23.25 24c-.19 0-.38-.07-.53-.22l-10.72-10.72-10.72 10.72c-.29.29-.77.29-1.06 0s-.29-.77 0-1.06l10.72-10.72-10.72-10.72c-.29-.29-.29-.77 0-1.06s.77-.29 1.06 0l10.72 10.72 10.72-10.72c.29-.29.77-.29 1.06 0s .29.77 0 1.06l-10.72 10.72 10.72 10.72c.29.29.29.77 0 1.06-.15.15-.34.22-.53.22" fill-rule="evenodd"></path></svg>
@@ -122,6 +122,27 @@
             }
         }
 
+        function installDlg(btn, dlg, width, height) {
+            btn.click(function(event) {
+                event.preventDefault();
+                dlg.find("button").css("outline", "none");
+                dlg.dialog({
+                    "draggable": false,
+                    "height": height,
+                    "modal": true,
+                    "resizable": false,
+                    "width": width,
+                    "open": function() {
+                        let overlay = $(".ui-widget-overlay");
+                        overlay.css({ "opacity": "0.8", "background-color": "black" });
+                        overlay.click(function(event) {
+                            dlg.dialog("close");
+                        });
+                    },
+                });
+            });
+        }
+
         $(document).ready(function() {
             $(".nav-menu > ul > li").hover(
                 function() {
@@ -132,31 +153,14 @@
                 }
             );
 
-            let dlgSignup = $("#dlg-signup");
-            $("#btn-signup").click(function(event) {
-                event.preventDefault();
-                dlgSignup.find("button").css("outline", "none");
-                dlgSignup.dialog({
-                    "draggable": false,
-                    "height": 376,
-                    "modal": true,
-                    "resizable": false,
-                    "width": 568,
-                    "open": function() {
-                        let overlay = $(".ui-widget-overlay");
-                        overlay.css({ "opacity": "0.8", "background-color": "black" });
-                        overlay.click(function(event) {
-                            dlgSignup.dialog("close");
-                        });
-                    },
-                });
-            });
+            installDlg($("#btn-signup"), $("#dlg-signup"), 568, 376);
 
             $(window).resize(function() {
                 adjustForSize();
             });
 
             adjustForSize();
+            $("body").show();
         });
     </script>
 

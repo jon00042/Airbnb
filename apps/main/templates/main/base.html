@@ -170,23 +170,10 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/js-cookie/2.2.0/js.cookie.min.js"></script>
 
     <script>
-        function adjustForSize() {
-            if ($(window).width() >= 1128) {
-                $(".nav-logo-dd").hide();
-                $(".nav-logo-link").show();
-                $(".nav-menu").show();
-            } else {
-                $(".nav-logo-dd").show();
-                $(".nav-logo-link").hide();
-                $(".nav-menu").hide();
-            }
-
-            if ($(window).width() >= 744) {
-                $(".nav-search-lg").show();
-                $(".nav-search-sm").hide();
-            } else {
-                $(".nav-search-lg").hide();
-                $(".nav-search-sm").show();
+        function setCsrfToken(xhr) {
+            let csrfToken = Cookies.get("csrftoken");
+            if (!this.crossDomain) {
+                xhr.setRequestHeader("X-CSRFToken", csrfToken);
             }
         }
 
@@ -216,13 +203,6 @@
                 event.preventDefault();
                 dlg.dialog(config);
             });
-        }
-
-        function setCsrfToken(xhr) {
-            let csrfToken = Cookies.get("csrftoken");
-            if (!this.crossDomain) {
-                xhr.setRequestHeader("X-CSRFToken", csrfToken);
-            }
         }
 
         function dlgResponseHandler(dlg, type, response) {
@@ -348,13 +328,6 @@
                     },
                 });
             });
-
-            $(window).resize(function() {
-                adjustForSize();
-            });
-
-            adjustForSize();
-            $("body").show();
         });
     </script>
 

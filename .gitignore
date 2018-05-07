@@ -2,5 +2,6 @@
 *.pyc
 .DS_Store
 [0-9]*.py
-notes
 constants.py
+notes
+media

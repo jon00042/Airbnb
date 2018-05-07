@@ -1,4 +1,15 @@
 {% extends 'main/base.html' %}
 
 {% block app %}
+
+<div class="pl-2 pr-4 pt-3">
+    {% for listing in listings %}
+    <div class="listing">
+        <a href=""><img src="/media/photo.jpg"></a>
+        <a href="">{{listing.name}}</a>
+    </div>
+    {% endfor %}
+</div>
+
 {% endblock %}
+

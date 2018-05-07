@@ -26,13 +26,6 @@ def get_logged_in_user(request):
     request.session.clear()
     return None, str(ex)
 
-def index(request):
-    # create_mock_data()
-    # db.create_booking('2018-03-24', '2018-04-04', 'bangkok1', 1000, 2, 2)
-    # db.cancel_booking(2)
-    # listing_ids = db.get_bookable_listings('2018-03-25', '2018-03-30', db.get_all_listing_ids())
-    return render(request, 'main/index.html')
-
 def logout(request):
     request.session.clear()
     return redirect('main:index')
@@ -77,4 +70,13 @@ def signup_ajax(request):
         return JsonResponse({ 'msg': error }, status=400)
     request.session['user_id'] = user.id
     return JsonResponse({ 'url': redirect('main:index').url })
+
+def index(request):
+    # create_mock_data()
+    # db.create_booking('2018-03-24', '2018-04-04', 'bangkok1', 1000, 2, 2)
+    # db.cancel_booking(2)
+    # listing_ids = db.get_bookable_listings('2018-03-25', '2018-03-30', db.get_all_listing_ids())
+    context = {}
+    context['listings'] = db.get_all_listings()
+    return render(request, 'main/index.html', context)
 

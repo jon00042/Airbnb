@@ -162,9 +162,7 @@ def get_bookable_listings(from_date, to_date, listing_ids):
     return avail_listings
 
 def get_all_listing_ids():
-    try:
-        return m.Listing.objects.all().values_list('id', flat=True)
-    except Exception as ex:
-        print('{}: {}'.format(type(ex), ex))
-        return None, str(ex)
+    return m.Listing.objects.all().values_list('id', flat=True)
 
+def get_all_listings():
+    return m.Listing.objects.all()

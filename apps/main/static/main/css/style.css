@@ -116,6 +116,21 @@ body {
     white-space: nowrap;
 }
 
+.filter-bar {
+    height: 64px;
+    border-bottom: 1px solid rgb(228, 228, 228);
+    padding-left: 30px;
+}
+
+.filter-bar > button {
+    display: inline-block;
+    margin-top: 16px;
+    margin-left: 16px;
+    background-color: white;
+    border-radius: 4px;
+    outline: none;
+}
+
 @media (max-width: 743px) {
     .nav-bar > div {
         display: table;
@@ -137,7 +152,6 @@ body {
         display: none;
     }
 }
-
 @media (min-width: 744px) {
     .nav-bar > div {
         display: table;
@@ -159,7 +173,6 @@ body {
         display: none;
     }
 }
-
 @media (min-width: 1128px) {
     .nav-bar > div {
         display: table;
@@ -179,5 +192,36 @@ body {
     }
     .nav-menu {
         display: table-cell;
+    }
+}
+
+.listing {
+    display: inline-block;
+    margin: 10px;
+    width: 100%;
+}
+
+.listing > a {
+    color: black;
+    text-decoration: none;
+}
+
+.listing > a > img {
+    max-width: 100%;
+}
+
+@media (min-width: 744px) {
+    .listing {
+        width: 46%;
+    }
+}
+@media (min-width: 1128px) {
+    .listing {
+        width: 22%;
+    }
+}
+@media (min-width: 1440px) {
+    .listing {
+        width: 18%;
     }
 }

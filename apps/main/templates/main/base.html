@@ -57,7 +57,7 @@
         </div>
     </div>
 
-    <div id="dlg-signup1" style="display: none; padding: 32px 32px">
+    <div id="dlg-signup" style="display: none; padding: 32px 32px">
         <div style="margin-bottom: 24px;">
             <button style="border-color: white;">
                 <svg viewBox="0 0 24 24" role="img" aria-label="Close" focusable="false" style="height: 16px; width: 16px; display: block; fill: rgb(118, 118, 118);"><path d="m23.25 24c-.19 0-.38-.07-.53-.22l-10.72-10.72-10.72 10.72c-.29.29-.77.29-1.06 0s-.29-.77 0-1.06l10.72-10.72-10.72-10.72c-.29-.29-.29-.77 0-1.06s.77-.29 1.06 0l10.72 10.72 10.72-10.72c.29-.29.77-.29 1.06 0s .29.77 0 1.06l-10.72 10.72 10.72 10.72c.29.29.29.77 0 1.06-.15.15-.34.22-.53.22" fill-rule="evenodd"></path></svg>
@@ -79,30 +79,6 @@
                 <div style="display: table-cell; padding-left: 12px;">Continue with Google</div>
             </div>
         </button>
-        <div style="margin-top: 16px; margin-bottom: 16px; text-align: center;">or</div>
-        <button id="email" style="margin-top: 10px; font-size: 19px; background-color: rgb(255, 90, 95); color: white; border-radius: 4px; height: 50px; width: 100%;">
-            <div style="display: table; margin: 0px auto;">
-                <div style="display: table-cell;">
-                    <svg viewBox="0 0 24 24" role="presentation" aria-hidden="true" focusable="false" style="height: 18px; width: 18px; display: block; fill: currentcolor;"><path d="m22.5 4h-21c-.83 0-1.5.67-1.5 1.51v12.99c0 .83.67 1.5 1.5 1.5h20.99a1.5 1.5 0 0 0 1.51-1.51v-12.98c0-.84-.67-1.51-1.5-1.51zm.5 14.2-6.14-7.91 6.14-4.66v12.58zm-.83-13.2-9.69 7.36c-.26.2-.72.2-.98 0l-9.67-7.36h20.35zm-21.17.63 6.14 4.67-6.14 7.88zm.63 13.37 6.3-8.1 2.97 2.26c.62.47 1.57.47 2.19 0l2.97-2.26 6.29 8.1z" fill-rule="evenodd"></path></svg>
-                </div>
-                <div style="display: table-cell; padding-left: 12px;">Sign up with Email</div>
-            </div>
-        </button>
-        <div style="margin-top: 16px; margin-bottom: 16px; border: 1px solid rgb(219, 219, 219);"></div>
-        <div style="text-align: center;">
-            <span style="margin-right: 10px;">Already have an Airbnb account?</span><span><a id="login" href="" style="color: rgb(0, 132, 137)">Log in</a></span>
-        </div>
-    </div>
-
-    <div id="dlg-signup2" style="display: none; padding: 32px 32px">
-        <div style="margin-bottom: 24px;">
-            <button style="border-color: white;">
-                <svg viewBox="0 0 24 24" role="img" aria-label="Close" focusable="false" style="height: 16px; width: 16px; display: block; fill: rgb(118, 118, 118);"><path d="m23.25 24c-.19 0-.38-.07-.53-.22l-10.72-10.72-10.72 10.72c-.29.29-.77.29-1.06 0s-.29-.77 0-1.06l10.72-10.72-10.72-10.72c-.29-.29-.29-.77 0-1.06s.77-.29 1.06 0l10.72 10.72 10.72-10.72c.29-.29.77-.29 1.06 0s .29.77 0 1.06l-10.72 10.72 10.72 10.72c.29.29.29.77 0 1.06-.15.15-.34.22-.53.22" fill-rule="evenodd"></path></svg>
-            </button>
-        </div>
-        <div style="text-align: center;">
-            <span>Sign up with </span><span><a href="" style="color: rgb(0, 132, 137)">Facebook</a><span> or </span><span><a href="" style="color: rgb(0, 132, 137)">Google</a><span></span>
-        </div>
         <div style="margin-top: 16px; margin-bottom: 16px; text-align: center;">or</div>
         <div style="border: 1px solid rgb(219, 219, 219); font-size: 19px; height: 44px;">
             <svg viewBox="0 0 24 24" role="presentation" aria-hidden="true" focusable="false" style="margin-right: 11px; margin-top: 11px; float: right; height: 1em; width: 1em; display: block; fill: currentcolor;"><path d="m22.5 4h-21c-.83 0-1.5.67-1.5 1.51v12.99c0 .83.67 1.5 1.5 1.5h20.99a1.5 1.5 0 0 0 1.51-1.51v-12.98c0-.84-.67-1.51-1.5-1.51zm.5 14.2-6.14-7.91 6.14-4.66v12.58zm-.83-13.2-9.69 7.36c-.26.2-.72.2-.98 0l-9.67-7.36h20.35zm-21.17.63 6.14 4.67-6.14 7.88zm.63 13.37 6.3-8.1 2.97 2.26c.62.47 1.57.47 2.19 0l2.97-2.26 6.29 8.1z" fill-rule="evenodd"></path></svg>
@@ -250,30 +226,19 @@
             );
 
             let loginCfg = makeDlgCfg($("#dlg-login"), 568, 500);
-            let signupCfg1 = makeDlgCfg($("#dlg-signup1"), 568, 400);
-            let signupCfg2 = makeDlgCfg($("#dlg-signup2"), 568, 520);
+            let signupCfg = makeDlgCfg($("#dlg-signup"), 568, 600);
 
             connectDlg($("#btn-login"), $("#dlg-login"), loginCfg)
-            connectDlg($("#btn-signup"), $("#dlg-signup1"), signupCfg1);
+            connectDlg($("#btn-signup"), $("#dlg-signup"), signupCfg);
 
-            connectDlg($("#dlg-signup1").find("#email"), $("#dlg-signup2"), signupCfg2);
-            $("#dlg-signup1").find("#email").click(function(event) {
-                $("#dlg-signup1").dialog("close");
-            });
-
-            connectDlg($("#dlg-login").find("#signup"), $("#dlg-signup1"), signupCfg1);
+            connectDlg($("#dlg-login").find("#signup"), $("#dlg-signup"), signupCfg);
             $("#dlg-login").find("#signup").click(function(event) {
                 $("#dlg-login").dialog("close");
             });
 
-            connectDlg($("#dlg-signup1").find("#login"), $("#dlg-login"), loginCfg);
-            $("#dlg-signup1").find("#login").click(function(event) {
-                $("#dlg-signup1").dialog("close");
-            });
-
-            connectDlg($("#dlg-signup2").find("#login"), $("#dlg-login"), loginCfg);
-            $("#dlg-signup2").find("#login").click(function(event) {
-                $("#dlg-signup2").dialog("close");
+            connectDlg($("#dlg-signup").find("#login"), $("#dlg-login"), loginCfg);
+            $("#dlg-signup").find("#login").click(function(event) {
+                $("#dlg-signup").dialog("close");
             });
 
             $(window).resize(function() {

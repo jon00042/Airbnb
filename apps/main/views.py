@@ -8,7 +8,7 @@ from pprint import pprint
 
 def create_mock_data():
     db.create_static_data()
-    db.create_user('jon@email.com', 'Jon L', 'xxx')
+    db.create_user('jon@email.com', 'Jon L', '$2b$12$wSf0d2tHL8dzQJrMAo7lxODzmVYlKeWMWP961/bNKekhMQoYozgP6')
     db.create_user('peter@email.com', 'Peter S', 'xxx')
 
     db.create_listing('2018-07-28', '2018-08-05', 'miami', 'addr', None, 100, 1, 1, 1, 1, [])
@@ -39,6 +39,26 @@ def logout(request):
     request.session.clear()
     return redirect('main:index')
 
+def login_ajax(request):
+    user = get_logged_in_user(request)
+    if user:
+        return JsonResponse({ 'url': redirect('main:index').url })
+    if request.method != 'POST':
+        return JsonResponse({ 'url': redirect('main:index').url }, status=405)
+    email = request.POST.get('email')
+    hashed_b64_pwd = request.POST.get('hashed_b64_pwd')
+    if not email or not hashed_b64_pwd:
+        return JsonResponse({ 'msg': 'All fields must be filled in!' }, status=400)
+    user, error = db.get_user(email)
+    if not user:
+        if not error:
+            error = 'internal server error!'
+        return JsonResponse({ 'msg': error }, status=400)
+    if not bcrypt.checkpw(hashed_b64_pwd.encode('utf-8'), user.encrypted_hashed_pwd.encode('utf-8')):
+        return JsonResponse({ 'msg': 'Login attempt failed!' }, status=400)
+    request.session['user_id'] = user.id
+    return JsonResponse({ 'url': redirect('main:index').url })
+
 def signup_ajax(request):
     user = get_logged_in_user(request)
     if user:
@@ -48,8 +68,8 @@ def signup_ajax(request):
     email = request.POST.get('email')
     fullname = request.POST.get('fullname')
     hashed_b64_pwd = request.POST.get('hashed_b64_pwd')
-    if (not email or not fullname or not hashed_b64_pwd):
-        return JsonResponse({ 'msg': 'All fields must be filled out!' }, status=400)
+    if not email or not fullname or not hashed_b64_pwd:
+        return JsonResponse({ 'msg': 'All fields must be filled in!' }, status=400)
     encrypted_bytes = bcrypt.hashpw(hashed_b64_pwd.encode('utf-8'), bcrypt.gensalt())
     encrypted_str = encrypted_bytes.decode('utf-8')
     user, error = db.create_user(email, fullname, encrypted_str)

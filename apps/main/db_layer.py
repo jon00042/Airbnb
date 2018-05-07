@@ -102,6 +102,15 @@ def create_user(email, fullname, pwd):
         print('{}: {}'.format(type(ex), ex))
         return None, str(ex)
 
+def get_user(email):
+    try:
+        return m.User.objects.get(email=email), None
+    except m.User.DoesNotExist:
+        return None, 'Login attempt failed!'
+    except Exception as ex:
+        print('{}: {}'.format(type(ex), ex))
+        return None, str(ex)
+
 @transaction.atomic
 def create_listing(from_date, to_date, name, address, gps_coordinates, price_per_night, beds, bedrooms, bathrooms, host_user_id, static_attrs):
     from_date = ensureDate(from_date)

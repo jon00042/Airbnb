@@ -115,7 +115,7 @@ def get_user(email):
 def create_listing(from_date, to_date, name, address, gps_coordinates, price_per_night, beds, bedrooms, bathrooms, host_user_id, static_attrs):
     from_date = ensureDate(from_date)
     to_date = ensureDate(to_date)
-    if  from_date >= to_date:
+    if  from_date > to_date:
         return None, '{} thru {}: invalid date range!'.format(from_date, to_date)
     listing = m.Listing.objects.create(name=name, address=address, gps_coordinates=gps_coordinates, price_per_night=price_per_night, beds=beds, bedrooms=bedrooms, bathrooms=bathrooms, host_user_id=host_user_id)
     for static_attr in static_attrs:
@@ -133,7 +133,7 @@ def create_listing(from_date, to_date, name, address, gps_coordinates, price_per
 def create_booking(from_date, to_date, name, transaction_amount, listing_id, guest_user_id):
     from_date = ensureDate(from_date)
     to_date = ensureDate(to_date)
-    if  from_date >= to_date:
+    if  from_date > to_date:
         return None, '{} thru {}: invalid date range!'.format(from_date, to_date)
     print('got here')
     booking = m.Booking.objects.create(name=name, transaction_amount=transaction_amount, guest_user_id=guest_user_id)
@@ -151,7 +151,7 @@ def cancel_booking(booking_id):
 def get_bookable_listings(from_date, to_date, listing_ids):
     from_date = ensureDate(from_date)
     to_date = ensureDate(to_date)
-    if  from_date >= to_date:
+    if  from_date > to_date:
         return None, '{} thru {}: invalid date range!'.format(from_date, to_date)
     num_days = (to_date - from_date).days + 1
     free_dates = m.BookingState.objects.filter(listing_id__in=listing_ids).filter(the_date__gte=from_date).filter(the_date__lte=to_date).filter(booking_id=None)
@@ -166,5 +166,5 @@ def get_all_listing_ids():
         return m.Listing.objects.all().values_list('id', flat=True)
     except Exception as ex:
         print('{}: {}'.format(type(ex), ex))
-        return None, ex
+        return None, str(ex)
 

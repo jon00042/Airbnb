@@ -4,8 +4,6 @@ import bcrypt
 from django.http import JsonResponse
 from django.shortcuts import redirect, render
 
-from pprint import pprint
-
 def create_mock_data():
     db.create_static_data()
     db.create_user('jon@email.com', 'Jon L', '$2b$12$wSf0d2tHL8dzQJrMAo7lxODzmVYlKeWMWP961/bNKekhMQoYozgP6')
@@ -26,7 +24,7 @@ def get_logged_in_user(request):
     except Exception as ex:
         print('{}: {}'.format(type(ex), ex))
     request.session.clear()
-    return None, ex
+    return None, str(ex)
 
 def index(request):
     # create_mock_data()

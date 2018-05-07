@@ -16,7 +16,7 @@
 }
 
 body {
-    font-family: Circular,"Helvetica Neue",Helvetica,Arial,sans-serif;
+    font-family: Arial, Helvetica, sans-serif;
     margin: 0 auto;
 }
 
@@ -80,7 +80,7 @@ body {
 }
 
 .nav-search-sm > div > button {
-    background: transparent;
+    background: white;
     border: 1px solid #DBDBDB;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     color: rgb(72, 72, 72);
@@ -101,18 +101,21 @@ body {
 .nav-menu > ul > li {
     display: table-cell;
     font-size: 14px;
+    height: 80px;
+    padding-top: 20px;
+}
+
+.nav-menu > ul > li:hover {
+    border-bottom: 2px solid rgb(118,118,118);
 }
 
 .nav-menu > ul > li > button {
-    background: transparent;
-    border-color: white;
+    background: white;
+    border: 0;
     color: rgb(72, 72, 72);
-    height: 80px;
-    line-height: 14px;
     margin: 0 8px;
     outline: none;
     padding: 8px 8px;
-    vertical-align: middle;
     white-space: nowrap;
 }
 
@@ -129,6 +132,10 @@ body {
     background-color: white;
     border-radius: 4px;
     outline: none;
+}
+
+.filter-bar > button:hover {
+    background-color: lightgrey;
 }
 
 @media (max-width: 743px) {

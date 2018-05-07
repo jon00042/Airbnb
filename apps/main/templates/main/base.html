@@ -234,15 +234,6 @@
         }
 
         $(document).ready(function() {
-            $(".nav-menu > ul > li").hover(
-                function() {
-                    $(this).css("border-bottom", "2px solid rgb(118,118,118)");
-                },
-                function() {
-                    $(this).css("border-bottom", "2px solid white");
-                }
-            );
-
             let loginCfg = makeDlgCfg($("#dlg-login"), 568, 520);
             let signupCfg = makeDlgCfg($("#dlg-signup"), 568, 580);
 

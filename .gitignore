@@ -2,3 +2,4 @@
 *.pyc
 [0-9]*.py
 notes
+constants.py

@@ -1,7 +1,7 @@
 from django.db import models
 
 class User(models.Model):
-    email = models.CharField(max_length=256)
+    email = models.CharField(max_length=256, unique=True)
     fullname = models.CharField(max_length=256)
     encrypted_hashed_pwd = models.CharField(max_length=1024)
     gender = models.CharField(max_length=32)
@@ -21,11 +21,6 @@ class Listing(models.Model):
     ################
     host_user = models.ForeignKey(User, related_name='host_listings', on_delete=models.PROTECT)
 
-class ListingAvailable(models.Model):
-    available_date = models.DateField()
-    ################
-    listing = models.ForeignKey(Listing, related_name='available_dates', on_delete=models.PROTECT)
-
 class StaticAttributes(models.Model):
     attr_type = models.CharField(max_length=128)
     attr_name = models.CharField(max_length=256)
@@ -42,11 +37,11 @@ class Booking(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     ################
-    listing = models.ForeignKey(Listing, related_name='bookings', on_delete=models.PROTECT)
     guest_user = models.ForeignKey(User, related_name='guest_bookings', on_delete=models.PROTECT)
 
-class BookingDate(models.Model):
-    booked_date = models.DateField()
+class BookingState(models.Model):
+    the_date = models.DateField()
+    booking_id = models.IntegerField(null=True)
     ################
-    booking = models.ForeignKey(Booking, related_name='booked_dates', on_delete=models.PROTECT)
+    listing = models.ForeignKey(Listing, related_name='dates', on_delete=models.PROTECT)
 

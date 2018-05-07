@@ -101,64 +101,53 @@ def create_user(email, fullname, pwd, gender):
 
 @transaction.atomic
 def create_listing(from_date, to_date, name, address, gps_coordinates, price_per_night, beds, bedrooms, bathrooms, host_user_id, static_attrs):
-    try:
-        from_date = ensureDate(from_date)
-        to_date = ensureDate(to_date)
-        if (from_date >= to_date):
-            return None, '{} thru {}: invalid date range!'.format(from_date, to_date)
-        listing = m.Listing.objects.create(name=name, address=address, gps_coordinates=gps_coordinates, price_per_night=price_per_night, beds=beds, bedrooms=bedrooms, bathrooms=bathrooms, host_user_id=host_user_id)
-        for static_attr in static_attrs:
-            attr_type, attr_name = static_attr
-            attribute = m.StaticAttributes.objects.get(Q(attr_type=attr_type) & Q(attr_name=attr_name))
-            m.ListingAttributes.objects.create(listing_id=listing.id, attribute_id=attribute.id)
-        d = from_date
-        delta = datetime.timedelta(days=1)
-        while d <= to_date:
-            m.ListingAvailable.objects.create(listing_id = listing.id, available_date=d)
-            d += delta
-        return listing
-    except Exception as ex:
-        print('{}: {}'.format(type(ex), ex))
-        return None, ex
+    from_date = ensureDate(from_date)
+    to_date = ensureDate(to_date)
+    if (from_date >= to_date):
+        return None, '{} thru {}: invalid date range!'.format(from_date, to_date)
+    listing = m.Listing.objects.create(name=name, address=address, gps_coordinates=gps_coordinates, price_per_night=price_per_night, beds=beds, bedrooms=bedrooms, bathrooms=bathrooms, host_user_id=host_user_id)
+    for static_attr in static_attrs:
+        attr_type, attr_name = static_attr
+        attribute = m.StaticAttributes.objects.get(Q(attr_type=attr_type) & Q(attr_name=attr_name))
+        m.ListingAttributes.objects.create(listing_id=listing.id, attribute_id=attribute.id)
+    d = from_date
+    delta = datetime.timedelta(days=1)
+    while d <= to_date:
+        m.BookingState.objects.create(listing_id=listing.id, the_date=d)
+        d += delta
+    return listing
 
 @transaction.atomic
 def create_booking(from_date, to_date, name, transaction_amount, listing_id, guest_user_id):
-    try:
-        from_date = ensureDate(from_date)
-        to_date = ensureDate(to_date)
-        if (from_date >= to_date):
-            return None, '{} thru {}: invalid date range!'.format(from_date, to_date)
-        booking = m.Booking.objects.create(name=name, transaction_amount=transaction_amount, listing_id=listing_id, guest_user_id=guest_user_id)
-        d = from_date
-        delta = datetime.timedelta(days=1)
-        while d <= to_date:
-            m.BookingDate.objects.create(booking_id=booking.id, booked_date=d)
-            d += delta
-        return booking
-    except Exception as ex:
-        print('{}: {}'.format(type(ex), ex))
-        return None, ex
+    from_date = ensureDate(from_date)
+    to_date = ensureDate(to_date)
+    if (from_date >= to_date):
+        return None, '{} thru {}: invalid date range!'.format(from_date, to_date)
+    print('got here')
+    booking = m.Booking.objects.create(name=name, transaction_amount=transaction_amount, guest_user_id=guest_user_id)
+    m.BookingState.objects.filter(listing_id=listing_id).filter(the_date__gte=from_date).filter(the_date__lte=to_date).update(booking_id=booking.id)
+    return booking
+
+@transaction.atomic
+def cancel_booking(booking_id):
+    booking = m.Booking.objects.get(id=booking_id)
+    booking.canceled_at = datetime.datetime.now()
+    booking.save()
+    m.BookingState.objects.filter(booking_id=booking_id).update(booking_id=None)
+    return booking
 
 def get_bookable_listings(from_date, to_date, listing_ids):
-    try:
-        from_date = ensureDate(from_date)
-        to_date = ensureDate(to_date)
-        if (from_date >= to_date):
-            return None, '{} thru {}: invalid date range!'.format(from_date, to_date)
-        num_days = (to_date - from_date).days + 1
-        booked_listing_ids = m.BookingDate.objects.filter(booking__listing_id__in=listing_ids).filter(booked_date__gte=from_date).filter(booked_date__lte=to_date).values_list('booking__listing_id', flat=True).distinct()
-        # print(booked_listing_ids.query)
-        # print(booked_listing_ids)
-        bookable_listing_ids = m.ListingAvailable.objects.filter(listing_id__in=listing_ids).exclude(listing_id__in=booked_listing_ids).filter(available_date__gte=from_date).filter(available_date__lte=to_date).values('listing_id').annotate(count=Count('available_date')).filter(count=num_days).values_list('listing_id', flat=True)
-        # print(bookable_listing_ids.query)
-        # print(bookable_listing_ids)
-        bookable_listing_ids_dict = {}
-        for bookable_listing_id in bookable_listing_ids:
-            bookable_listing_ids_dict[str(bookable_listing_id)] = 1
-        return bookable_listing_ids_dict
-    except Exception as ex:
-        print('{}: {}'.format(type(ex), ex))
-        return None, ex
+    from_date = ensureDate(from_date)
+    to_date = ensureDate(to_date)
+    if (from_date >= to_date):
+        return None, '{} thru {}: invalid date range!'.format(from_date, to_date)
+    num_days = (to_date - from_date).days + 1
+    free_dates = m.BookingState.objects.filter(listing_id__in=listing_ids).filter(the_date__gte=from_date).filter(the_date__lte=to_date).filter(booking_id=None)
+    avail_listing_ids = free_dates.values('listing_id').annotate(count=Count('the_date')).filter(count=num_days).values_list('listing_id', flat=True)
+    avail_listings = m.Listing.objects.filter(id__in=avail_listing_ids)
+    # print(avail_listings.query)
+    # print(avail_listings)
+    return avail_listings
 
 def get_all_listing_ids():
     try:

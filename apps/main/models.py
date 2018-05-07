@@ -4,7 +4,7 @@ class User(models.Model):
     email = models.CharField(max_length=256, unique=True)
     fullname = models.CharField(max_length=256)
     encrypted_hashed_pwd = models.CharField(max_length=1024)
-    gender = models.CharField(max_length=32)
+    gender = models.CharField(max_length=32, null=True)
     mobile_number = models.CharField(max_length=64, null=True)
     active = models.BooleanField(default=True)
 

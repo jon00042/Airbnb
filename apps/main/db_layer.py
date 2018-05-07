@@ -1,9 +1,10 @@
 import apps.main.models as m
 import datetime
 import dateutil.parser
+import django
 
 from django.db import transaction
-from django.db.models import Count, Q
+from django.db.models import Count
 
 def create_static_data():
     if len(m.StaticAttributes.objects.all()) == 0:
@@ -92,12 +93,14 @@ def ensureDate(val):
         return dateutil.parser.parse(val).date()
     return None
 
-def create_user(email, fullname, pwd, gender):
+def create_user(email, fullname, pwd):
     try:
-        return m.User.objects.create(email=email, fullname=fullname, encrypted_hashed_pwd=pwd, gender=gender)
+        return m.User.objects.create(email=email, fullname=fullname, encrypted_hashed_pwd=pwd), None
+    except django.db.utils.IntegrityError:
+        return None, 'email already in use!'
     except Exception as ex:
         print('{}: {}'.format(type(ex), ex))
-        return None, ex
+        return None, str(ex)
 
 @transaction.atomic
 def create_listing(from_date, to_date, name, address, gps_coordinates, price_per_night, beds, bedrooms, bathrooms, host_user_id, static_attrs):
@@ -108,7 +111,7 @@ def create_listing(from_date, to_date, name, address, gps_coordinates, price_per
     listing = m.Listing.objects.create(name=name, address=address, gps_coordinates=gps_coordinates, price_per_night=price_per_night, beds=beds, bedrooms=bedrooms, bathrooms=bathrooms, host_user_id=host_user_id)
     for static_attr in static_attrs:
         attr_type, attr_name = static_attr
-        attribute = m.StaticAttributes.objects.get(Q(attr_type=attr_type) & Q(attr_name=attr_name))
+        attribute = m.StaticAttributes.objects.filter(attr_type=attr_type).filter(attr_name=attr_name)
         m.ListingAttributes.objects.create(listing_id=listing.id, attribute_id=attribute.id)
     d = from_date
     delta = datetime.timedelta(days=1)

@@ -156,7 +156,6 @@
         </div>
         <div id="error" style="margin-top: 10px; padding-left: 10px; background-color: orange; color: white;"></div>
     </div>
-
     {% block app %} {% endblock %}
 
     <script src="{% static 'main/lib/jquery-3.2.1.min.js' %}"></script>
@@ -314,6 +313,8 @@
                     },
                 });
             });
+
+            $("body").show();
         });
     </script>
 

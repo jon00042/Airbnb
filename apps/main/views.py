@@ -1,15 +1,10 @@
 import apps.main.db_layer as db
+import apps.main.mock as mock
 import bcrypt
 
 from django.http import JsonResponse
 from django.shortcuts import redirect, render
 from pprint import pprint
-
-def create_mock_data():
-    db.create_static_data()
-    db.create_mock_users()
-    db.create_mock_listings()
-    return None
 
 def get_logged_in_user(request):
     if 'user_id' not in request.session:
@@ -67,10 +62,11 @@ def signup_ajax(request):
     return JsonResponse({ 'url': redirect('main:index').url })
 
 def index(request):
-    create_mock_data()
+    mock.create_users()
+    mock.create_listings()
     # db.create_booking('2018-03-24', '2018-04-04', 'bangkok1', 1000, 2, 2)
     # db.cancel_booking(2)
-    # listing_ids = db.get_bookable_listings('2018-03-25', '2018-03-30', db.get_all_listing_ids())
+    # listing_ids = db.get_bookable_listings_ids('2018-03-25', '2018-03-30', db.get_all_listing_ids())
     context = {}
     context['listings'] = db.get_all_listings()
     return render(request, 'main/index.html', context)

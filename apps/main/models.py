@@ -15,23 +15,20 @@ class Listing(models.Model):
     zip_code = models.CharField(max_length=64)
     country = models.CharField(max_length=128)
     gps_coordinates = models.CharField(max_length=128, unique=True)
+    stay_type = models.IntegerField()
+    prop_type = models.IntegerField()
+    uniq_type = models.IntegerField(null=True)
     beds = models.FloatField()
     bedrooms = models.FloatField()
     bathrooms = models.FloatField()
     price_per_night = models.DecimalField(max_digits=15, decimal_places=5)
+    amenities_mask = models.IntegerField()
+    facilities_mask = models.IntegerField()
+    rules_mask = models.IntegerField()
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     ################
     host_user = models.ForeignKey(User, related_name='host_listings', on_delete=models.PROTECT)
-
-class StaticAttr(models.Model):
-    attr_name = models.CharField(max_length=128)
-    attr_val = models.CharField(max_length=256)
-    active = models.BooleanField(default=True)
-
-class ListingAttr(models.Model):
-    listing = models.ForeignKey(Listing, related_name='attrs', on_delete=models.PROTECT)
-    attr = models.ForeignKey(StaticAttr, related_name='listings', on_delete=models.PROTECT)
 
 class Booking(models.Model):
     name = models.CharField(max_length=256)

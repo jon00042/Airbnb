@@ -167,11 +167,28 @@ def get_listing(listing_id, context):
     try:
         listing = m.Listing.objects.get(id=listing_id)
         context['listing'] = listing
-        context['stay_type'] = listing.attrs.filter(attr__attr_name='stay_type').values_list('attr__attr_val', flat=True)
-        context['prop_type'] = listing.attrs.filter(attr__attr_name='prop_type').values_list('attr__attr_val', flat=True)
-        context['uniq_type'] = listing.attrs.filter(attr__attr_name='uniq_type').values_list('attr__attr_val', flat=True)
+        context['stay_type'] = listing.attrs.filter(attr__attr_name='stay_type').values_list('attr__attr_val', flat=True)[0]
+        context['prop_type'] = listing.attrs.filter(attr__attr_name='prop_type').values_list('attr__attr_val', flat=True)[0]
+        uniq_types = listing.attrs.filter(attr__attr_name='uniq_type').values_list('attr__attr_val', flat=True)
+        if uniq_types and len(uniq_types) > 0:
+            context['uniq_type'] = uniq_types[0]
         context['amenities'] = listing.attrs.filter(attr__attr_name='amenities').values_list('attr__attr_val', flat=True)
         context['facilities'] = listing.attrs.filter(attr__attr_name='facilities').values_list('attr__attr_val', flat=True)
+        rules = listing.attrs.filter(attr__attr_name='rules').values_list('attr__attr_val', flat=True)
+        final_rules = []
+        if 'events' in rules:
+            final_rules.append('Events allowed')
+        else:
+            final_rules.append('Events not allowed')
+        if 'smoking' in rules:
+            final_rules.append('Smoking permitted')
+        else:
+            final_rules.append('No smoking')
+        if 'pets' in rules:
+            final_rules.append('Pets allowed')
+        else:
+            final_rules.append('No pets allowed')
+        context['rules'] = final_rules
         pprint(context)
     except Exception as ex:
         print('{}: {}'.format(type(ex), ex))
@@ -183,7 +200,6 @@ def create_booking(from_date, to_date, name, transaction_amount, listing_id, gue
     to_date = ensure_date(to_date)
     if  from_date > to_date:
         return None, '{} thru {}: invalid date range!'.format(from_date, to_date)
-    print('got here')
     booking = m.Booking.objects.create(name=name, transaction_amount=transaction_amount, guest_user_id=guest_user_id)
     m.BookingState.objects.filter(listing_id=listing_id).filter(the_date__gte=from_date).filter(the_date__lte=to_date).update(booking_id=booking.id)
     return booking

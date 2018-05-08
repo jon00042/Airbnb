@@ -5,8 +5,8 @@
 <div class="pl-2 pr-4 pt-3">
     {% for listing in listings %}
     <div class="listing">
-        <a href=""><img src="/media/photo.jpg"></a>
-        <a href="">{{listing.name}}</a>
+        <a href="{% url 'main:listing' id=listing.id %}"><img src="/media/listings/{{listing.id}}/main.jpg"></a>
+        <a href="{% url 'main:listing' id=listing.id %}">{{listing.name}}</a>
     </div>
     {% endfor %}
 </div>

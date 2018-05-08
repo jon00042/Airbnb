@@ -7,13 +7,11 @@ from django.shortcuts import redirect, render
 def create_mock_data():
     db.create_static_data()
     db.create_user('jon@email.com', 'Jon L', '$2b$12$wSf0d2tHL8dzQJrMAo7lxODzmVYlKeWMWP961/bNKekhMQoYozgP6')
-    db.create_user('peter@email.com', 'Peter S', 'xxx')
-
-    db.create_listing('2018-07-28', '2018-08-05', 'miami', 'addr', None, 100, 1, 1, 1, 1, [])
-    db.create_listing('2018-01-01', '2018-12-31', 'bangkok', 'addr', None, 100, 1, 1, 1, 1, [])
-    db.create_listing('2018-06-01', '2018-10-31', 'tokyo', 'addr', None, 100, 1, 1, 1, 1, [])
-    db.create_listing('2018-03-25', '2018-04-26', 'singapore', 'addr', None, 100, 1, 1, 1, 1, [])
-    db.create_listing('2018-03-01', '2018-08-07', 'houston', 'addr', None, 100, 1, 1, 1, 1, [])
+    db.create_user('peter@email.com', 'Peter S', '$2b$12$wSf0d2tHL8dzQJrMAo7lxODzmVYlKeWMWP961/bNKekhMQoYozgP6')
+    db.create_user('rick@email.com', 'Rick L', '$2b$12$wSf0d2tHL8dzQJrMAo7lxODzmVYlKeWMWP961/bNKekhMQoYozgP6')
+    db.create_user('fiaz@email.com', 'Fiaz S', '$2b$12$wSf0d2tHL8dzQJrMAo7lxODzmVYlKeWMWP961/bNKekhMQoYozgP6')
+    db.create_user('etienne@email.com', 'Etienne D', '$2b$12$wSf0d2tHL8dzQJrMAo7lxODzmVYlKeWMWP961/bNKekhMQoYozgP6')
+    db.create_listing(1, '2018-01-01', '2018-12-31', 'Playboy Mansion', 'Party with models!', '10236 Charing Cross Road', '90024', 'USA', '1', 20, 10, 5.5, 10000, [ db.lookup_attr_id('Home type','Entire place'), db.lookup_attr_id('Property type','House'), db.lookup_attr_id('Facilities','Free parking on premises'), db.lookup_attr_id('Facilities','Gym'), db.lookup_attr_id('Facilities','Hot tub'), db.lookup_attr_id('Facilities','Pool'), db.lookup_attr_id('Amenities','Kitchen'), db.lookup_attr_id('Amenities','Heating'), db.lookup_attr_id('Amenities','Air conditioning'), db.lookup_attr_id('Amenities','Washer'), db.lookup_attr_id('Amenities','Dryer'), db.lookup_attr_id('Amenities','Wifi') ])
     return None
 
 def get_logged_in_user(request):
@@ -72,11 +70,14 @@ def signup_ajax(request):
     return JsonResponse({ 'url': redirect('main:index').url })
 
 def index(request):
-    # create_mock_data()
+    create_mock_data()
     # db.create_booking('2018-03-24', '2018-04-04', 'bangkok1', 1000, 2, 2)
     # db.cancel_booking(2)
     # listing_ids = db.get_bookable_listings('2018-03-25', '2018-03-30', db.get_all_listing_ids())
     context = {}
     context['listings'] = db.get_all_listings()
     return render(request, 'main/index.html', context)
+
+def listing(request):
+    return render(request, 'main/listing.html')
 

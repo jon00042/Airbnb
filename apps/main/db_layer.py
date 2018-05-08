@@ -2,89 +2,99 @@ import apps.main.models as m
 import datetime
 import dateutil.parser
 import django
+import inspect
 
 from django.db import transaction
 from django.db.models import Count
 
 def create_static_data():
-    if len(m.StaticAttributes.objects.all()) == 0:
-        m.StaticAttributes.objects.create(attr_type='Amenities', attr_name='Kitchen')
-        m.StaticAttributes.objects.create(attr_type='Amenities', attr_name='Shampoo')
-        m.StaticAttributes.objects.create(attr_type='Amenities', attr_name='Heating')
-        m.StaticAttributes.objects.create(attr_type='Amenities', attr_name='Air conditioning')
-        m.StaticAttributes.objects.create(attr_type='Amenities', attr_name='Washer')
-        m.StaticAttributes.objects.create(attr_type='Amenities', attr_name='Dryer')
-        m.StaticAttributes.objects.create(attr_type='Amenities', attr_name='Wifi')
-        m.StaticAttributes.objects.create(attr_type='Amenities', attr_name='Breakfast')
-        m.StaticAttributes.objects.create(attr_type='Amenities', attr_name='Indoor fireplace')
-        m.StaticAttributes.objects.create(attr_type='Amenities', attr_name='Buzzer/wireless intercom')
-        m.StaticAttributes.objects.create(attr_type='Amenities', attr_name='Doorman')
-        m.StaticAttributes.objects.create(attr_type='Amenities', attr_name='Hangers')
-        m.StaticAttributes.objects.create(attr_type='Amenities', attr_name='Iron')
-        m.StaticAttributes.objects.create(attr_type='Amenities', attr_name='Hair dryer')
-        m.StaticAttributes.objects.create(attr_type='Amenities', attr_name='Laptop friendly workspace')
-        m.StaticAttributes.objects.create(attr_type='Amenities', attr_name='TV')
-        m.StaticAttributes.objects.create(attr_type='Amenities', attr_name='Crib')
-        m.StaticAttributes.objects.create(attr_type='Amenities', attr_name='High chair')
-        m.StaticAttributes.objects.create(attr_type='Amenities', attr_name='Self check-in')
-        m.StaticAttributes.objects.create(attr_type='Amenities', attr_name='Smoke detector')
-        m.StaticAttributes.objects.create(attr_type='Facilities', attr_name='Free parking on premises')
-        m.StaticAttributes.objects.create(attr_type='Facilities', attr_name='Gym')
-        m.StaticAttributes.objects.create(attr_type='Facilities', attr_name='Hot tub')
-        m.StaticAttributes.objects.create(attr_type='Facilities', attr_name='Pool')
-        m.StaticAttributes.objects.create(attr_type='Property type', attr_name='House')
-        m.StaticAttributes.objects.create(attr_type='Property type', attr_name='Apartment')
-        m.StaticAttributes.objects.create(attr_type='Property type', attr_name='Bed and breakfast')
-        m.StaticAttributes.objects.create(attr_type='Property type', attr_name='Boutique hotel')
-        m.StaticAttributes.objects.create(attr_type='Property type', attr_name='Bungalow')
-        m.StaticAttributes.objects.create(attr_type='Property type', attr_name='Cabin')
-        m.StaticAttributes.objects.create(attr_type='Property type', attr_name='Chalet')
-        m.StaticAttributes.objects.create(attr_type='Property type', attr_name='Cottage')
-        m.StaticAttributes.objects.create(attr_type='Property type', attr_name='Guest suite')
-        m.StaticAttributes.objects.create(attr_type='Property type', attr_name='Guesthouse')
-        m.StaticAttributes.objects.create(attr_type='Property type', attr_name='Hostel')
-        m.StaticAttributes.objects.create(attr_type='Property type', attr_name='Hotel')
-        m.StaticAttributes.objects.create(attr_type='Property type', attr_name='Loft')
-        m.StaticAttributes.objects.create(attr_type='Property type', attr_name='Resort')
-        m.StaticAttributes.objects.create(attr_type='Property type', attr_name='Townhouse')
-        m.StaticAttributes.objects.create(attr_type='Property type', attr_name='Villa')
-        m.StaticAttributes.objects.create(attr_type='Unique homes', attr_name='Barn')
-        m.StaticAttributes.objects.create(attr_type='Unique homes', attr_name='Boat')
-        m.StaticAttributes.objects.create(attr_type='Unique homes', attr_name='Camper/RV')
-        m.StaticAttributes.objects.create(attr_type='Unique homes', attr_name='Campsite')
-        m.StaticAttributes.objects.create(attr_type='Unique homes', attr_name='Casa particular')
-        m.StaticAttributes.objects.create(attr_type='Unique homes', attr_name='Castle')
-        m.StaticAttributes.objects.create(attr_type='Unique homes', attr_name='Cave')
-        m.StaticAttributes.objects.create(attr_type='Unique homes', attr_name='Cycladic house')
-        m.StaticAttributes.objects.create(attr_type='Unique homes', attr_name='Dammuso')
-        m.StaticAttributes.objects.create(attr_type='Unique homes', attr_name='Dome house')
-        m.StaticAttributes.objects.create(attr_type='Unique homes', attr_name='Earth house')
-        m.StaticAttributes.objects.create(attr_type='Unique homes', attr_name='Farm stay')
-        m.StaticAttributes.objects.create(attr_type='Unique homes', attr_name='Houseboat')
-        m.StaticAttributes.objects.create(attr_type='Unique homes', attr_name='Hut')
-        m.StaticAttributes.objects.create(attr_type='Unique homes', attr_name='Igloo')
-        m.StaticAttributes.objects.create(attr_type='Unique homes', attr_name='Island')
-        m.StaticAttributes.objects.create(attr_type='Unique homes', attr_name='Lighthouse')
-        m.StaticAttributes.objects.create(attr_type='Unique homes', attr_name='Minsu')
-        m.StaticAttributes.objects.create(attr_type='Unique homes', attr_name='Nature lodge')
-        m.StaticAttributes.objects.create(attr_type='Unique homes', attr_name='Pension (South Korea)')
-        m.StaticAttributes.objects.create(attr_type='Unique homes', attr_name='Plane')
-        m.StaticAttributes.objects.create(attr_type='Unique homes', attr_name='Ryokan')
-        m.StaticAttributes.objects.create(attr_type='Unique homes', attr_name='Shepherds hut (U.K., France)')
-        m.StaticAttributes.objects.create(attr_type='Unique homes', attr_name='Tent')
-        m.StaticAttributes.objects.create(attr_type='Unique homes', attr_name='Tiny house')
-        m.StaticAttributes.objects.create(attr_type='Unique homes', attr_name='Tipi')
-        m.StaticAttributes.objects.create(attr_type='Unique homes', attr_name='Train')
-        m.StaticAttributes.objects.create(attr_type='Unique homes', attr_name='Treehouse')
-        m.StaticAttributes.objects.create(attr_type='Unique homes', attr_name='Trullo')
-        m.StaticAttributes.objects.create(attr_type='Unique homes', attr_name='Windmill')
-        m.StaticAttributes.objects.create(attr_type='Unique homes', attr_name='Yurt')
-        m.StaticAttributes.objects.create(attr_type='House rules', attr_name='Suitable for events')
-        m.StaticAttributes.objects.create(attr_type='House rules', attr_name='Pets allowed')
-        m.StaticAttributes.objects.create(attr_type='House rules', attr_name='Smoking allowed')
+    if len(m.StaticAttr.objects.all()) == 0:
+        m.StaticAttr.objects.create(attr_type='Amenities', attr_name='Kitchen')
+        m.StaticAttr.objects.create(attr_type='Amenities', attr_name='Shampoo')
+        m.StaticAttr.objects.create(attr_type='Amenities', attr_name='Heating')
+        m.StaticAttr.objects.create(attr_type='Amenities', attr_name='Air conditioning')
+        m.StaticAttr.objects.create(attr_type='Amenities', attr_name='Washer')
+        m.StaticAttr.objects.create(attr_type='Amenities', attr_name='Dryer')
+        m.StaticAttr.objects.create(attr_type='Amenities', attr_name='Wifi')
+        m.StaticAttr.objects.create(attr_type='Amenities', attr_name='Breakfast')
+        m.StaticAttr.objects.create(attr_type='Amenities', attr_name='Indoor fireplace')
+        m.StaticAttr.objects.create(attr_type='Amenities', attr_name='Buzzer/wireless intercom')
+        m.StaticAttr.objects.create(attr_type='Amenities', attr_name='Doorman')
+        m.StaticAttr.objects.create(attr_type='Amenities', attr_name='Hangers')
+        m.StaticAttr.objects.create(attr_type='Amenities', attr_name='Iron')
+        m.StaticAttr.objects.create(attr_type='Amenities', attr_name='Hair dryer')
+        m.StaticAttr.objects.create(attr_type='Amenities', attr_name='Laptop friendly workspace')
+        m.StaticAttr.objects.create(attr_type='Amenities', attr_name='TV')
+        m.StaticAttr.objects.create(attr_type='Amenities', attr_name='Crib')
+        m.StaticAttr.objects.create(attr_type='Amenities', attr_name='High chair')
+        m.StaticAttr.objects.create(attr_type='Amenities', attr_name='Self check-in')
+        m.StaticAttr.objects.create(attr_type='Amenities', attr_name='Smoke detector')
+        m.StaticAttr.objects.create(attr_type='Facilities', attr_name='Free parking on premises')
+        m.StaticAttr.objects.create(attr_type='Facilities', attr_name='Gym')
+        m.StaticAttr.objects.create(attr_type='Facilities', attr_name='Hot tub')
+        m.StaticAttr.objects.create(attr_type='Facilities', attr_name='Pool')
+        m.StaticAttr.objects.create(attr_type='Home type', attr_name='Entire place')
+        m.StaticAttr.objects.create(attr_type='Home type', attr_name='Private room')
+        m.StaticAttr.objects.create(attr_type='Home type', attr_name='Shared room')
+        m.StaticAttr.objects.create(attr_type='Property type', attr_name='House')
+        m.StaticAttr.objects.create(attr_type='Property type', attr_name='Apartment')
+        m.StaticAttr.objects.create(attr_type='Property type', attr_name='Bed and breakfast')
+        m.StaticAttr.objects.create(attr_type='Property type', attr_name='Boutique hotel')
+        m.StaticAttr.objects.create(attr_type='Property type', attr_name='Bungalow')
+        m.StaticAttr.objects.create(attr_type='Property type', attr_name='Cabin')
+        m.StaticAttr.objects.create(attr_type='Property type', attr_name='Chalet')
+        m.StaticAttr.objects.create(attr_type='Property type', attr_name='Cottage')
+        m.StaticAttr.objects.create(attr_type='Property type', attr_name='Guest suite')
+        m.StaticAttr.objects.create(attr_type='Property type', attr_name='Guesthouse')
+        m.StaticAttr.objects.create(attr_type='Property type', attr_name='Hostel')
+        m.StaticAttr.objects.create(attr_type='Property type', attr_name='Hotel')
+        m.StaticAttr.objects.create(attr_type='Property type', attr_name='Loft')
+        m.StaticAttr.objects.create(attr_type='Property type', attr_name='Resort')
+        m.StaticAttr.objects.create(attr_type='Property type', attr_name='Townhouse')
+        m.StaticAttr.objects.create(attr_type='Property type', attr_name='Villa')
+        m.StaticAttr.objects.create(attr_type='Unique homes', attr_name='Barn')
+        m.StaticAttr.objects.create(attr_type='Unique homes', attr_name='Boat')
+        m.StaticAttr.objects.create(attr_type='Unique homes', attr_name='Camper/RV')
+        m.StaticAttr.objects.create(attr_type='Unique homes', attr_name='Campsite')
+        m.StaticAttr.objects.create(attr_type='Unique homes', attr_name='Casa particular')
+        m.StaticAttr.objects.create(attr_type='Unique homes', attr_name='Castle')
+        m.StaticAttr.objects.create(attr_type='Unique homes', attr_name='Cave')
+        m.StaticAttr.objects.create(attr_type='Unique homes', attr_name='Cycladic house')
+        m.StaticAttr.objects.create(attr_type='Unique homes', attr_name='Dammuso')
+        m.StaticAttr.objects.create(attr_type='Unique homes', attr_name='Dome house')
+        m.StaticAttr.objects.create(attr_type='Unique homes', attr_name='Earth house')
+        m.StaticAttr.objects.create(attr_type='Unique homes', attr_name='Farm stay')
+        m.StaticAttr.objects.create(attr_type='Unique homes', attr_name='Houseboat')
+        m.StaticAttr.objects.create(attr_type='Unique homes', attr_name='Hut')
+        m.StaticAttr.objects.create(attr_type='Unique homes', attr_name='Igloo')
+        m.StaticAttr.objects.create(attr_type='Unique homes', attr_name='Island')
+        m.StaticAttr.objects.create(attr_type='Unique homes', attr_name='Lighthouse')
+        m.StaticAttr.objects.create(attr_type='Unique homes', attr_name='Minsu')
+        m.StaticAttr.objects.create(attr_type='Unique homes', attr_name='Nature lodge')
+        m.StaticAttr.objects.create(attr_type='Unique homes', attr_name='Pension (South Korea)')
+        m.StaticAttr.objects.create(attr_type='Unique homes', attr_name='Plane')
+        m.StaticAttr.objects.create(attr_type='Unique homes', attr_name='Ryokan')
+        m.StaticAttr.objects.create(attr_type='Unique homes', attr_name='Shepherds hut (U.K., France)')
+        m.StaticAttr.objects.create(attr_type='Unique homes', attr_name='Tent')
+        m.StaticAttr.objects.create(attr_type='Unique homes', attr_name='Tiny house')
+        m.StaticAttr.objects.create(attr_type='Unique homes', attr_name='Tipi')
+        m.StaticAttr.objects.create(attr_type='Unique homes', attr_name='Train')
+        m.StaticAttr.objects.create(attr_type='Unique homes', attr_name='Treehouse')
+        m.StaticAttr.objects.create(attr_type='Unique homes', attr_name='Trullo')
+        m.StaticAttr.objects.create(attr_type='Unique homes', attr_name='Windmill')
+        m.StaticAttr.objects.create(attr_type='Unique homes', attr_name='Yurt')
+        m.StaticAttr.objects.create(attr_type='House rules', attr_name='events')
+        m.StaticAttr.objects.create(attr_type='House rules', attr_name='pets')
+        m.StaticAttr.objects.create(attr_type='House rules', attr_name='smoking')
     return None
 
-def ensureDate(val):
+def lookup_attr_id(attr_type, attr_name):
+    results = m.StaticAttr.objects.filter(attr_type=attr_type).filter(attr_name=attr_name)
+    if results and len(results) == 1:
+        return results[0].id
+    return 0
+
+def ensure_date(val):
     if  type(val) == datetime.date:
         return val
     elif type(val) == datetime:
@@ -112,16 +122,14 @@ def get_user(email):
         return None, str(ex)
 
 @transaction.atomic
-def create_listing(from_date, to_date, name, address, gps_coordinates, price_per_night, beds, bedrooms, bathrooms, host_user_id, static_attrs):
-    from_date = ensureDate(from_date)
-    to_date = ensureDate(to_date)
+def trans_create_listing(host_user_id, from_date, to_date, name, desc, street_addr, zip_code, country, gps_coordinates, beds, bedrooms, bathrooms, price_per_night, attr_ids):
+    from_date = ensure_date(from_date)
+    to_date = ensure_date(to_date)
     if  from_date > to_date:
         return None, '{} thru {}: invalid date range!'.format(from_date, to_date)
-    listing = m.Listing.objects.create(name=name, address=address, gps_coordinates=gps_coordinates, price_per_night=price_per_night, beds=beds, bedrooms=bedrooms, bathrooms=bathrooms, host_user_id=host_user_id)
-    for static_attr in static_attrs:
-        attr_type, attr_name = static_attr
-        attribute = m.StaticAttributes.objects.filter(attr_type=attr_type).filter(attr_name=attr_name)
-        m.ListingAttributes.objects.create(listing_id=listing.id, attribute_id=attribute.id)
+    listing = m.Listing.objects.create(host_user_id=host_user_id, name=name, desc=desc, street_addr=street_addr, zip_code=zip_code, country=country, gps_coordinates=gps_coordinates, beds=beds, bedrooms=bedrooms, bathrooms=bathrooms, price_per_night=price_per_night)
+    for attr_id in attr_ids:
+        m.ListingAttr.objects.create(listing_id=listing.id, attr_id=attr_id)
     d = from_date
     delta = datetime.timedelta(days=1)
     while d <= to_date:
@@ -129,10 +137,17 @@ def create_listing(from_date, to_date, name, address, gps_coordinates, price_per
         d += delta
     return listing
 
+def create_listing(host_user_id, from_date, to_date, name, desc, street_addr, zip_code, country, gps_coordinates, beds, bedrooms, bathrooms, price_per_night, attr_ids):
+    try:
+        trans_create_listing(host_user_id, from_date, to_date, name, desc, street_addr, zip_code, country, gps_coordinates, beds, bedrooms, bathrooms, price_per_night, attr_ids)
+    except Exception as ex:
+        print('{}: {}'.format(type(ex), ex))
+    return None
+
 @transaction.atomic
 def create_booking(from_date, to_date, name, transaction_amount, listing_id, guest_user_id):
-    from_date = ensureDate(from_date)
-    to_date = ensureDate(to_date)
+    from_date = ensure_date(from_date)
+    to_date = ensure_date(to_date)
     if  from_date > to_date:
         return None, '{} thru {}: invalid date range!'.format(from_date, to_date)
     print('got here')
@@ -149,8 +164,8 @@ def cancel_booking(booking_id):
     return booking
 
 def get_bookable_listings(from_date, to_date, listing_ids):
-    from_date = ensureDate(from_date)
-    to_date = ensureDate(to_date)
+    from_date = ensure_date(from_date)
+    to_date = ensure_date(to_date)
     if  from_date > to_date:
         return None, '{} thru {}: invalid date range!'.format(from_date, to_date)
     num_days = (to_date - from_date).days + 1

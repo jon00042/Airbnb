@@ -10,25 +10,28 @@ class User(models.Model):
 
 class Listing(models.Model):
     name = models.CharField(max_length=256)
-    address = models.CharField(max_length=1024)
-    gps_coordinates = models.CharField(max_length=128, null=True)
+    desc = models.TextField(null=True)
+    street_addr = models.CharField(max_length=1024)
+    zip_code = models.CharField(max_length=64)
+    country = models.CharField(max_length=128)
+    gps_coordinates = models.CharField(max_length=128, unique=True)
+    beds = models.FloatField()
+    bedrooms = models.FloatField()
+    bathrooms = models.FloatField()
     price_per_night = models.DecimalField(max_digits=15, decimal_places=5)
-    beds = models.IntegerField()
-    bedrooms = models.IntegerField()
-    bathrooms = models.IntegerField()
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     ################
     host_user = models.ForeignKey(User, related_name='host_listings', on_delete=models.PROTECT)
 
-class StaticAttributes(models.Model):
+class StaticAttr(models.Model):
     attr_type = models.CharField(max_length=128)
     attr_name = models.CharField(max_length=256)
     active = models.BooleanField(default=True)
 
-class ListingAttributes(models.Model):
-    listing = models.ForeignKey(Listing, related_name='attributes', on_delete=models.PROTECT)
-    attribute = models.ForeignKey(StaticAttributes, related_name='listings', on_delete=models.PROTECT)
+class ListingAttr(models.Model):
+    listing = models.ForeignKey(Listing, related_name='attrs', on_delete=models.PROTECT)
+    attr = models.ForeignKey(StaticAttr, related_name='listings', on_delete=models.PROTECT)
 
 class Booking(models.Model):
     name = models.CharField(max_length=256)

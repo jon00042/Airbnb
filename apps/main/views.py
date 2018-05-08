@@ -3,6 +3,7 @@ import bcrypt
 
 from django.http import JsonResponse
 from django.shortcuts import redirect, render
+from pprint import pprint
 
 def create_mock_data():
     db.create_static_data()
@@ -11,7 +12,7 @@ def create_mock_data():
     db.create_user('rick@email.com', 'Rick L', '$2b$12$wSf0d2tHL8dzQJrMAo7lxODzmVYlKeWMWP961/bNKekhMQoYozgP6')
     db.create_user('fiaz@email.com', 'Fiaz S', '$2b$12$wSf0d2tHL8dzQJrMAo7lxODzmVYlKeWMWP961/bNKekhMQoYozgP6')
     db.create_user('etienne@email.com', 'Etienne D', '$2b$12$wSf0d2tHL8dzQJrMAo7lxODzmVYlKeWMWP961/bNKekhMQoYozgP6')
-    db.create_listing(1, '2018-01-01', '2018-12-31', 'Playboy Mansion', 'Party with models!', '10236 Charing Cross Road', '90024', 'USA', '1', 20, 10, 5.5, 10000, [ db.lookup_attr_id('Home type','Entire place'), db.lookup_attr_id('Property type','House'), db.lookup_attr_id('Facilities','Free parking on premises'), db.lookup_attr_id('Facilities','Gym'), db.lookup_attr_id('Facilities','Hot tub'), db.lookup_attr_id('Facilities','Pool'), db.lookup_attr_id('Amenities','Kitchen'), db.lookup_attr_id('Amenities','Heating'), db.lookup_attr_id('Amenities','Air conditioning'), db.lookup_attr_id('Amenities','Washer'), db.lookup_attr_id('Amenities','Dryer'), db.lookup_attr_id('Amenities','Wifi') ])
+    db.create_listing(1, '2018-01-01', '2018-12-31', 'Playboy Mansion', 'Party with models!', '10236 Charing Cross Road', '90024', 'USA', '1', 20, 10, 5.5, 10000, [ db.lookup_attr_id('stay_type','Entire place'), db.lookup_attr_id('prop_type','House'), db.lookup_attr_id('facilities','Free parking on premises'), db.lookup_attr_id('facilities','Gym'), db.lookup_attr_id('facilities','Hot tub'), db.lookup_attr_id('facilities','Pool'), db.lookup_attr_id('amenities','Kitchen'), db.lookup_attr_id('amenities','Heating'), db.lookup_attr_id('amenities','Air conditioning'), db.lookup_attr_id('amenities','Washer'), db.lookup_attr_id('amenities','Dryer'), db.lookup_attr_id('amenities','Wifi') ])
     return None
 
 def get_logged_in_user(request):
@@ -78,6 +79,8 @@ def index(request):
     context['listings'] = db.get_all_listings()
     return render(request, 'main/index.html', context)
 
-def listing(request):
-    return render(request, 'main/listing.html')
+def listing(request, id):
+    context = {}
+    db.get_listing(id, context)
+    return render(request, 'main/listing.html', context)
 

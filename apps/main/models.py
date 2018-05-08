@@ -25,8 +25,8 @@ class Listing(models.Model):
     host_user = models.ForeignKey(User, related_name='host_listings', on_delete=models.PROTECT)
 
 class StaticAttr(models.Model):
-    attr_type = models.CharField(max_length=128)
-    attr_name = models.CharField(max_length=256)
+    attr_name = models.CharField(max_length=128)
+    attr_val = models.CharField(max_length=256)
     active = models.BooleanField(default=True)
 
 class ListingAttr(models.Model):

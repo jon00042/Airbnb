@@ -24,6 +24,11 @@ body {
     border-bottom: 1px solid rgb(228, 228, 228);
 }
 
+.nav-bar > div {
+    display: table;
+    height: 80px;
+}
+
 .nav-logo-link {
     display: table-cell;
     padding-left: 24px;
@@ -139,10 +144,6 @@ body {
 }
 
 @media (max-width: 743px) {
-    .nav-bar > div {
-        display: table;
-        height: 64px;
-    }
     .nav-logo-dd {
         display: table-cell;
     }
@@ -160,10 +161,6 @@ body {
     }
 }
 @media (min-width: 744px) {
-    .nav-bar > div {
-        display: table;
-        height: 80px;
-    }
     .nav-logo-dd {
         display: table-cell;
     }
@@ -181,10 +178,6 @@ body {
     }
 }
 @media (min-width: 1128px) {
-    .nav-bar > div {
-        display: table;
-        height: 80px;
-    }
     .nav-logo-dd {
         display: none;
     }

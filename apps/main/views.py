@@ -7,12 +7,8 @@ from pprint import pprint
 
 def create_mock_data():
     db.create_static_data()
-    db.create_user('jon@email.com', 'Jon L', '$2b$12$wSf0d2tHL8dzQJrMAo7lxODzmVYlKeWMWP961/bNKekhMQoYozgP6')
-    db.create_user('peter@email.com', 'Peter S', '$2b$12$wSf0d2tHL8dzQJrMAo7lxODzmVYlKeWMWP961/bNKekhMQoYozgP6')
-    db.create_user('rick@email.com', 'Rick L', '$2b$12$wSf0d2tHL8dzQJrMAo7lxODzmVYlKeWMWP961/bNKekhMQoYozgP6')
-    db.create_user('fiaz@email.com', 'Fiaz S', '$2b$12$wSf0d2tHL8dzQJrMAo7lxODzmVYlKeWMWP961/bNKekhMQoYozgP6')
-    db.create_user('etienne@email.com', 'Etienne D', '$2b$12$wSf0d2tHL8dzQJrMAo7lxODzmVYlKeWMWP961/bNKekhMQoYozgP6')
-    db.create_listing(1, '2018-01-01', '2018-12-31', 'Playboy Mansion', 'Party with models!', '10236 Charing Cross Road', '90024', 'USA', '1', 20, 10, 5.5, 10000, [ db.lookup_attr_id('stay_type','Entire place'), db.lookup_attr_id('prop_type','House'), db.lookup_attr_id('facilities','Free parking on premises'), db.lookup_attr_id('facilities','Gym'), db.lookup_attr_id('facilities','Hot tub'), db.lookup_attr_id('facilities','Pool'), db.lookup_attr_id('amenities','Kitchen'), db.lookup_attr_id('amenities','Heating'), db.lookup_attr_id('amenities','Air conditioning'), db.lookup_attr_id('amenities','Washer'), db.lookup_attr_id('amenities','Dryer'), db.lookup_attr_id('amenities','Wifi') ])
+    db.create_mock_users()
+    db.create_mock_listings()
     return None
 
 def get_logged_in_user(request):

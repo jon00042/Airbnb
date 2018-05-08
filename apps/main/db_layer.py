@@ -2,92 +2,110 @@ import apps.main.models as m
 import datetime
 import dateutil.parser
 import django
-import inspect
+import random
 
 from django.db import transaction
 from django.db.models import Count
 from pprint import pprint
 
+STATIC_DATA = {
+    'amenities': ['Kitchen', 'Shampoo', 'Heating', 'Air conditioning', 'Washer', 'Dryer', 'Wifi', 'Breakfast', 'Indoor fireplace', 'Buzzer/wireless intercom', 'Doorman', 'Hangers', 'Iron', 'Hair dryer', 'Laptop friendly workspace', 'TV', 'Crib', 'High chair', 'Self check-in', 'Smoke detector'],
+    'facilities': ['Free parking on premises', 'Gym', 'Hot tub', 'Pool'],
+    'prop_type': ['House', 'Apartment','Bed and breakfast','Boutique hotel','Bungalow', 'Cabin','Chalet','Cottage','Guest suite','Guesthouse','Hostel','Hotel','Loft','Resort','Townhouse', 'Villa'],
+    'rules': ['events', 'pets', 'smoking'],
+    'stay_type': ['Entire place', 'Private room', 'Shared room'],
+    'uniq_type': ['Barn','Boat','Camper/RV','Campsite','Casa particular','Castle','Cave','Cycladic house','Dammuso','Dome house','Earth house','Farm stay','Houseboat','Hut','Igloo','Island','Lighthouse','Minsu','Nature lodge','Pension (South Korea)','Plane','Ryokan','Shepherdshut (U.K., France)','Tent','Tiny house','Tipi','Train','Treehouse','Trullo','Windmill','Yurt'],
+}
+
+ADDRESSES = [
+    { 'street_addr': '5757 Wilshire Blvd #106', 'zip_code': '90036', 'country': 'USA', },
+    { 'street_addr': '1161 Westwood Blvd', 'zip_code': '90024', 'country': 'USA', },
+    { 'street_addr': '11707 San Vicente Blvd', 'zip_code': '90049', 'country': 'USA', },
+    { 'street_addr': '3242 Cahuenga Blvd W', 'zip_code': '90068', 'country': 'USA', },
+    { 'street_addr': '5453 Hollywood Blvd', 'zip_code': '90027', 'country': 'USA', },
+    { 'street_addr': '138 S Central Ave', 'zip_code': '90012', 'country': 'USA', },
+    { 'street_addr': '3722 Crenshaw Blvd', 'zip_code': '90016', 'country': 'USA', },
+    { 'street_addr': '8817 S Sepulveda Blvd', 'zip_code': '90045', 'country': 'USA', },
+    { 'street_addr': '5855 W Century Blvd', 'zip_code': '90045', 'country': 'USA', },
+    { 'street_addr': '120 S Los Angeles St #110', 'zip_code': '90012', 'country': 'USA', },
+    { 'street_addr': '555 W 5th St', 'zip_code': '90013', 'country': 'USA', },
+    { 'street_addr': '800 W Olympic Blvd #102', 'zip_code': '90015', 'country': 'USA', },
+    { 'street_addr': '1850 W Slauson Ave', 'zip_code': '90047', 'country': 'USA', },
+    { 'street_addr': '5857 S Central Ave', 'zip_code': '90001', 'country': 'USA', },
+    { 'street_addr': '906 Goodrich Blvd', 'zip_code': '90022', 'country': 'USA', },
+    { 'street_addr': '7724 Telegraph Rd', 'zip_code': '90040', 'country': 'USA', },
+    { 'street_addr': '17254 Lakewood Blvd', 'zip_code': '90706', 'country': 'USA', },
+    { 'street_addr': '429 Los Cerritos Center', 'zip_code': '90703', 'country': 'USA', },
+    { 'street_addr': '3575 Katella Ave', 'zip_code': '90720', 'country': 'USA', },
+    { 'street_addr': '1680 W Lomita Blvd', 'zip_code': '90710', 'country': 'USA', },
+    { 'street_addr': '8152 Sunset Blvd', 'zip_code': '90046', 'country': 'USA', },
+    { 'street_addr': '5223 W Century Blvd', 'zip_code': '90045', 'country': 'USA', },
+    { 'street_addr': '4947 Huntington Dr', 'zip_code': '90032', 'country': 'USA', },
+    { 'street_addr': '14742 Oxnard St', 'zip_code': '91411', 'country': 'USA', },
+    { 'street_addr': '5933 York Blvd', 'zip_code': '90042', 'country': 'USA', },
+    { 'street_addr': '2319 N San Fernando Rd', 'zip_code': '90065', 'country': 'USA', },
+    { 'street_addr': '4655 Hollywood Blvd', 'zip_code': '90027', 'country': 'USA', },
+    { 'street_addr': '6250 Hollywood Blvd', 'zip_code': '90028', 'country': 'USA', },
+    { 'street_addr': '400 World Way', 'zip_code': '90045', 'country': 'USA', },
+    { 'street_addr': '11603 Slater St', 'zip_code': '90059', 'country': 'USA', },
+    { 'street_addr': '8581 W Pico Blvd', 'zip_code': '90035', 'country': 'USA', },
+    { 'street_addr': '189 The Grove Dr', 'zip_code': '90036', 'country': 'USA', },
+    { 'street_addr': '901 South La Brea Ave #2', 'zip_code': '90036', 'country': 'USA', },
+    { 'street_addr': '4301 W Pico Blvd', 'zip_code': '90019', 'country': 'USA', },
+    { 'street_addr': '2575 W Pico Blvd', 'zip_code': '90006', 'country': 'USA', },
+    { 'street_addr': '852 S Broadway', 'zip_code': '90014', 'country': 'USA', },
+    { 'street_addr': '5601 Melrose Ave', 'zip_code': '90038', 'country': 'USA', },
+    { 'street_addr': '1528 North Vermont Avenue C', 'zip_code': '90027', 'country': 'USA', },
+    { 'street_addr': '523 N Fairfax Ave', 'zip_code': '90048', 'country': 'USA', },
+    { 'street_addr': '10 S De Lacey Ave, Pasadena, CA', 'zip_code': '91105', 'country': 'USA', },
+]
+
+NAMES = ['Mansion', 'Party House', 'Riverfront', 'Time of your Life', 'FOMO', 'Boathouse', 'Beach villa', 'Dreams come true', 'Trump Palace', 'Royal Residences', 'Grand Hotel']
+
 def create_static_data():
     if len(m.StaticAttr.objects.all()) == 0:
-        m.StaticAttr.objects.create(attr_name='amenities', attr_val='Kitchen')
-        m.StaticAttr.objects.create(attr_name='amenities', attr_val='Shampoo')
-        m.StaticAttr.objects.create(attr_name='amenities', attr_val='Heating')
-        m.StaticAttr.objects.create(attr_name='amenities', attr_val='Air conditioning')
-        m.StaticAttr.objects.create(attr_name='amenities', attr_val='Washer')
-        m.StaticAttr.objects.create(attr_name='amenities', attr_val='Dryer')
-        m.StaticAttr.objects.create(attr_name='amenities', attr_val='Wifi')
-        m.StaticAttr.objects.create(attr_name='amenities', attr_val='Breakfast')
-        m.StaticAttr.objects.create(attr_name='amenities', attr_val='Indoor fireplace')
-        m.StaticAttr.objects.create(attr_name='amenities', attr_val='Buzzer/wireless intercom')
-        m.StaticAttr.objects.create(attr_name='amenities', attr_val='Doorman')
-        m.StaticAttr.objects.create(attr_name='amenities', attr_val='Hangers')
-        m.StaticAttr.objects.create(attr_name='amenities', attr_val='Iron')
-        m.StaticAttr.objects.create(attr_name='amenities', attr_val='Hair dryer')
-        m.StaticAttr.objects.create(attr_name='amenities', attr_val='Laptop friendly workspace')
-        m.StaticAttr.objects.create(attr_name='amenities', attr_val='TV')
-        m.StaticAttr.objects.create(attr_name='amenities', attr_val='Crib')
-        m.StaticAttr.objects.create(attr_name='amenities', attr_val='High chair')
-        m.StaticAttr.objects.create(attr_name='amenities', attr_val='Self check-in')
-        m.StaticAttr.objects.create(attr_name='amenities', attr_val='Smoke detector')
-        m.StaticAttr.objects.create(attr_name='facilities', attr_val='Free parking on premises')
-        m.StaticAttr.objects.create(attr_name='facilities', attr_val='Gym')
-        m.StaticAttr.objects.create(attr_name='facilities', attr_val='Hot tub')
-        m.StaticAttr.objects.create(attr_name='facilities', attr_val='Pool')
-        m.StaticAttr.objects.create(attr_name='stay_type', attr_val='Entire place')
-        m.StaticAttr.objects.create(attr_name='stay_type', attr_val='Private room')
-        m.StaticAttr.objects.create(attr_name='stay_type', attr_val='Shared room')
-        m.StaticAttr.objects.create(attr_name='prop_type', attr_val='House')
-        m.StaticAttr.objects.create(attr_name='prop_type', attr_val='Apartment')
-        m.StaticAttr.objects.create(attr_name='prop_type', attr_val='Bed and breakfast')
-        m.StaticAttr.objects.create(attr_name='prop_type', attr_val='Boutique hotel')
-        m.StaticAttr.objects.create(attr_name='prop_type', attr_val='Bungalow')
-        m.StaticAttr.objects.create(attr_name='prop_type', attr_val='Cabin')
-        m.StaticAttr.objects.create(attr_name='prop_type', attr_val='Chalet')
-        m.StaticAttr.objects.create(attr_name='prop_type', attr_val='Cottage')
-        m.StaticAttr.objects.create(attr_name='prop_type', attr_val='Guest suite')
-        m.StaticAttr.objects.create(attr_name='prop_type', attr_val='Guesthouse')
-        m.StaticAttr.objects.create(attr_name='prop_type', attr_val='Hostel')
-        m.StaticAttr.objects.create(attr_name='prop_type', attr_val='Hotel')
-        m.StaticAttr.objects.create(attr_name='prop_type', attr_val='Loft')
-        m.StaticAttr.objects.create(attr_name='prop_type', attr_val='Resort')
-        m.StaticAttr.objects.create(attr_name='prop_type', attr_val='Townhouse')
-        m.StaticAttr.objects.create(attr_name='prop_type', attr_val='Villa')
-        m.StaticAttr.objects.create(attr_name='uniq_type', attr_val='Barn')
-        m.StaticAttr.objects.create(attr_name='uniq_type', attr_val='Boat')
-        m.StaticAttr.objects.create(attr_name='uniq_type', attr_val='Camper/RV')
-        m.StaticAttr.objects.create(attr_name='uniq_type', attr_val='Campsite')
-        m.StaticAttr.objects.create(attr_name='uniq_type', attr_val='Casa particular')
-        m.StaticAttr.objects.create(attr_name='uniq_type', attr_val='Castle')
-        m.StaticAttr.objects.create(attr_name='uniq_type', attr_val='Cave')
-        m.StaticAttr.objects.create(attr_name='uniq_type', attr_val='Cycladic house')
-        m.StaticAttr.objects.create(attr_name='uniq_type', attr_val='Dammuso')
-        m.StaticAttr.objects.create(attr_name='uniq_type', attr_val='Dome house')
-        m.StaticAttr.objects.create(attr_name='uniq_type', attr_val='Earth house')
-        m.StaticAttr.objects.create(attr_name='uniq_type', attr_val='Farm stay')
-        m.StaticAttr.objects.create(attr_name='uniq_type', attr_val='Houseboat')
-        m.StaticAttr.objects.create(attr_name='uniq_type', attr_val='Hut')
-        m.StaticAttr.objects.create(attr_name='uniq_type', attr_val='Igloo')
-        m.StaticAttr.objects.create(attr_name='uniq_type', attr_val='Island')
-        m.StaticAttr.objects.create(attr_name='uniq_type', attr_val='Lighthouse')
-        m.StaticAttr.objects.create(attr_name='uniq_type', attr_val='Minsu')
-        m.StaticAttr.objects.create(attr_name='uniq_type', attr_val='Nature lodge')
-        m.StaticAttr.objects.create(attr_name='uniq_type', attr_val='Pension (South Korea)')
-        m.StaticAttr.objects.create(attr_name='uniq_type', attr_val='Plane')
-        m.StaticAttr.objects.create(attr_name='uniq_type', attr_val='Ryokan')
-        m.StaticAttr.objects.create(attr_name='uniq_type', attr_val='Shepherds hut (U.K., France)')
-        m.StaticAttr.objects.create(attr_name='uniq_type', attr_val='Tent')
-        m.StaticAttr.objects.create(attr_name='uniq_type', attr_val='Tiny house')
-        m.StaticAttr.objects.create(attr_name='uniq_type', attr_val='Tipi')
-        m.StaticAttr.objects.create(attr_name='uniq_type', attr_val='Train')
-        m.StaticAttr.objects.create(attr_name='uniq_type', attr_val='Treehouse')
-        m.StaticAttr.objects.create(attr_name='uniq_type', attr_val='Trullo')
-        m.StaticAttr.objects.create(attr_name='uniq_type', attr_val='Windmill')
-        m.StaticAttr.objects.create(attr_name='uniq_type', attr_val='Yurt')
-        m.StaticAttr.objects.create(attr_name='House rules', attr_val='events')
-        m.StaticAttr.objects.create(attr_name='House rules', attr_val='pets')
-        m.StaticAttr.objects.create(attr_name='House rules', attr_val='smoking')
+        for attr_name, attr_list in STATIC_DATA.items():
+            for attr_val in attr_list:
+                m.StaticAttr.objects.create(attr_name=attr_name, attr_val=attr_val)
     return None
+
+def create_mock_users():
+    create_user('jon@email.com', 'Jon L', '$2b$12$wSf0d2tHL8dzQJrMAo7lxODzmVYlKeWMWP961/bNKekhMQoYozgP6')
+    create_user('peter@email.com', 'Peter S', '$2b$12$wSf0d2tHL8dzQJrMAo7lxODzmVYlKeWMWP961/bNKekhMQoYozgP6')
+    create_user('rick@email.com', 'Rick L', '$2b$12$wSf0d2tHL8dzQJrMAo7lxODzmVYlKeWMWP961/bNKekhMQoYozgP6')
+    create_user('fiaz@email.com', 'Fiaz S', '$2b$12$wSf0d2tHL8dzQJrMAo7lxODzmVYlKeWMWP961/bNKekhMQoYozgP6')
+    create_user('etienne@email.com', 'Etienne D', '$2b$12$wSf0d2tHL8dzQJrMAo7lxODzmVYlKeWMWP961/bNKekhMQoYozgP6')
+
+def create_mock_listing(addr_idx):
+    user_id = random.choice([1, 2, 3, 4, 5])
+    name = random.choice(NAMES)
+    addr_entry = ADDRESSES[addr_idx]
+    from_dt = '2018-{}-{}'.format(random.choice(range(1, 7)), random.choice(range(1, 28)))
+    to_dt = '2018-{}-{}'.format(random.choice(range(7, 13)), random.choice(range(1, 28)))
+    # fake_geo = '{}{}{}{}'.format(random.choice(from_dt), random.choice(to_dt), random.choice(name), random.choice(name))
+    beds = random.choice(range(1, 51))
+    rooms = random.choice(range(1, 26))
+    baths = random.choice(range(1, 11))
+    price = random.choice(range(100, 200))
+    other_stuff = []
+    other_stuff.append(lookup_attr_id('stay_type', random.choice(STATIC_DATA['stay_type'])))
+    other_stuff.append(lookup_attr_id('prop_type', random.choice(STATIC_DATA['prop_type'])))
+    other_stuff.append(lookup_attr_id('uniq_type', random.choice(STATIC_DATA['uniq_type'])))
+    append_stuff('amenities', other_stuff)
+    append_stuff('facilities', other_stuff)
+    append_stuff('rules', other_stuff)
+    # pprint('{} : {} : {} : {} : {} : {} : {} : {} : {} : {} : {} : {} : {} : {}'.format(user_id, from_dt, to_dt, name, 'description', addr_entry['street_addr'], addr_entry['zip_code'], addr_entry['country'], addr_idx, rooms, beds, baths, price, other_stuff))
+    create_listing(user_id, from_dt, to_dt, name, 'description', addr_entry['street_addr'], addr_entry['zip_code'], addr_entry['country'], addr_idx, rooms, beds, baths, price, other_stuff)
+
+def create_mock_listings():
+    for i in range(len(ADDRESSES)):
+        create_mock_listing(i)
+
+def append_stuff(key, other_stuff):
+    for i in range(int(len(STATIC_DATA[key])/2), len(STATIC_DATA[key])):
+        choice = lookup_attr_id(key, random.choice(STATIC_DATA[key]))
+        if choice not in other_stuff:
+            other_stuff.append(choice)
 
 def lookup_attr_id(attr_name, attr_val):
     results = m.StaticAttr.objects.filter(attr_name=attr_name).filter(attr_val=attr_val)

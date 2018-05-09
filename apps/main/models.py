@@ -1,3 +1,4 @@
+import apps.main.constants as const
 from django.db import models
 
 class User(models.Model):
@@ -29,6 +30,63 @@ class Listing(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
     ################
     host_user = models.ForeignKey(User, related_name='host_listings', on_delete=models.PROTECT)
+    ################
+    @property
+    def price_per_night_str(self):
+        if self.price_per_night + 1 - self.price_per_night == 1:
+            return '${:.0f}'.format(self.price_per_night)
+        return '${:.2f}'.format(self.price_per_night)
+    ################
+    @property
+    def beds_str(self):
+        if self.beds == 1:
+            return '1 bed'
+        if self.beds + 1 - self.beds == 1:
+            return '{:.0f} beds'.format(self.beds)
+        return '{:.2f} beds'.format(self.beds)
+    ################
+    @property
+    def bedrooms_str(self):
+        if self.bedrooms == 1:
+            return '1 bedroom'
+        if self.bedrooms + 1 - self.bedrooms == 1:
+            return '{:.0f} bedrooms'.format(self.bedrooms)
+        return '{:.2f} bedrooms'.format(self.bedrooms)
+    ################
+    @property
+    def bathrooms_str(self):
+        if self.bathrooms == 1:
+            return '1 bathroom'
+        if self.bathrooms + 1 - self.bathrooms == 1:
+            return '{:.0f} bathrooms'.format(self.bathrooms)
+        return '{:.2f} bathrooms'.format(self.bathrooms)
+    ################
+    @property
+    def stay_type_str(self):
+        return const.STAY_TYPE[self.stay_type]
+    ################
+    @property
+    def prop_type_str(self):
+        return const.PROP_TYPE[self.prop_type]
+    ################
+    @property
+    def uniq_type_str(self):
+        if self.uniq_type is None:
+            return ''
+        return const.UNIQ_TYPE[self.uniq_type]
+    ################
+    @property
+    def amenities_list(self):
+        return const.mask_to_list(const.AMENITIES, self.amenities_mask)
+    ################
+    @property
+    def facilities_list(self):
+        return const.mask_to_list(const.FACILITIES, self.facilities_mask)
+    ################
+    @property
+    def rules_list(self):
+        print(const.RULES)
+        return const.mask_to_list(const.RULES, self.rules_mask)
 
 class Booking(models.Model):
     name = models.CharField(max_length=256)

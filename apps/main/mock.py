@@ -2,7 +2,7 @@ import apps.main.db_layer as db
 import apps.main.constants as const
 import random
 
-NAMES = ['Mansion', 'Party House', 'Riverfront', 'Time of your Life', 'FOMO', 'Boathouse', 'Beach villa', 'Dreams come true', 'Trump Palace', 'Royal Residences', 'Grand Hotel']
+NAMES = ['Mansion', 'Party House', 'Riverfront', 'Time of your Life', 'FOMO', 'YOLO', 'Boathouse', 'Beach villa', 'Dreams come true', 'Trump Palace', 'Royal Residences', 'Grand Hotel']
 
 ADDRESSES = [
     { 'street_addr': '5757 Wilshire Blvd #106', 'zip_code': '90036', 'country': 'USA', },

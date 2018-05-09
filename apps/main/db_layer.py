@@ -64,13 +64,6 @@ def get_listing(listing_id, context):
     try:
         listing = m.Listing.objects.get(id=listing_id)
         context['listing'] = listing
-        context['stay_type'] = const.STAY_TYPE[listing.stay_type]
-        context['prop_type'] = const.PROP_TYPE[listing.prop_type]
-        context['uniq_type'] = const.UNIQ_TYPE[listing.uniq_type]
-        context['amenities'] = const.mask_to_list(const.AMENITIES, listing.amenities_mask)
-        context['facilities'] = const.mask_to_list(const.FACILITIES, listing.facilities_mask)
-        context['rules'] = const.mask_to_list(const.RULES, listing.rules_mask)
-        # pprint(context)
     except Exception as ex:
         print('{}: {}'.format(type(ex), ex))
 

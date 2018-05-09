@@ -13,7 +13,7 @@ class Listing(models.Model):
     name = models.CharField(max_length=256)
     desc = models.TextField(null=True)
     street_addr = models.CharField(max_length=1024)
-    zip_code = models.CharField(max_length=64)
+    postal_code = models.CharField(max_length=64)
     country = models.CharField(max_length=128)
     gps_coordinates = models.CharField(max_length=128, unique=True)
     stay_type = models.IntegerField()

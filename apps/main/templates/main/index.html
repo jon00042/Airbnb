@@ -47,6 +47,8 @@
             if (from.val() && to.val()) {
                 from.val(null);
                 to.val(null);
+                $("#dates").css("background-color", "white");
+                $("#dates").css("color", "black");
                 $("#dates").text("Dates");
             }
 
@@ -83,6 +85,9 @@
                     Clear: function() {
                         from.val(null);
                         to.val(null);
+                        $("#dates").css("background-color", "white");
+                        $("#dates").css("color", "black");
+                        $("#dates").text("Dates");
                         $("#dlg-cal").find("#dpDlg").datepicker("destroy");
                         $("#dlg-cal").dialog("close");
                     },
@@ -97,6 +102,8 @@
                     if (storage == from) {
                         setTimeout(function() { $("#dates").trigger("click"); }, 100);
                     } else {
+                        $("#dates").css("background-color", "rgb(0, 132, 137)");
+                        $("#dates").css("color", "white");
                         $("#dates").text(from.val() + " thru " + to.val());
                     }
                     $("#dlg-cal").find("#dpDlg").datepicker("destroy");

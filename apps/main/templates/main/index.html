@@ -3,9 +3,16 @@
 {% block app %}
 <div class="filter-bar">
     <button id="dates">Dates</button>
-    <input id="from" type="hidden" name="from">
-    <input id="to" type="hidden" name="to">
-    <button>Filters</button>
+    <button id="filters">Filters</button>
+</div>
+
+<div id="dlg-cal" style="display: none">
+    <div style="text-align: center">Select Date</div>
+    <div style="width: 100%; height: 200px;"></div>
+    <div>
+        <a>Cancel</a>
+        <a style="float: right;">Apply</a>
+    </div>
 </div>
 
 <div style="height: calc(100vh - 80px - 64px); overflow: scroll; padding-right: 30px;">
@@ -24,20 +31,39 @@
     </div>
     {% endfor %}
 </div>
-
 {% endblock %}
 
 {% block scripts %}
 <script>
-    $("#dates").click(function(event) {
-        console.log("got here")
-        if (!$("#from").text()) {
-            $("#from").datepicker();
-            console.log($("#from").text())
-        } else {
-            $("#to").datepicker();
-            console.log($("#to").text())
-        }
+    $(document).ready(function() {
+        $("#dates").click(function(event) {
+            event.preventDefault();
+            $("#dlg-cal").dialog({
+                draggable: false,
+                height: 260,
+                modal: true,
+                resizable: false,
+                width: 400,
+                open: function() {
+                    $("#dlg-cal").find("a").css("outline", "none");
+                    let overlay = $(".ui-widget-overlay");
+                    overlay.css({ "opacity": "0.7", "background-color": "black" });
+                    overlay.click(function(event) {
+                        $("#dlg-cal").dialog("close");
+                    });
+                    let nowYYYYMMDD = new Date().toISOString().slice(0,10);
+                    $("#area").datepicker("option", "dateFormat", "yy-mm-dd");
+                    let x = ($(window).width() / 2) - 130;
+                    let y = $("#dlg-cal").offset().top + 30;
+                    let options = {
+                        onClose: function() {
+                            $("#dlg-cal").dialog("close");
+                        }
+                    };
+                    $("#dlg-cal").datepicker("dialog", nowYYYYMMDD, null, options, [x, y]);
+                },
+            });
+        });
     });
 </script>
 {% endblock %}

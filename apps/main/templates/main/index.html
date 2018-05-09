@@ -4,19 +4,23 @@
 <div id="dlg-cal"><div id="dpDlg"></div></div>
 
 <div id="filter-vals" style="display: none;">
-    <input type="hidden" id="from">
-    <input type="hidden" id="to">
     <input type="hidden" id="filter_url" value="{% url 'main:filter_ajax' %}">
+    <input type="hidden" id="from_tmp">
+    <input type="hidden" id="to_tmp">
+    <input type="hidden" id="bookable_listing_ids_dict_str">
+    <input type="hidden" id="from_last">
+    <input type="hidden" id="to_last">
 </div>
 
 <div class="filter-bar">
     <button id="dates">Dates</button>
     <button id="filters">Filters</button>
+    <div id="num" style="display: inline-block; padding-left: 10px;">{{listings|length}} listing(s)</div>
 </div>
 
-<div style="height: calc(100vh - 80px - 64px); overflow: scroll; padding-right: 30px;">
+<div id="listings-div" style="height: calc(100vh - 80px - 64px); overflow: scroll; padding-right: 30px;">
     {% for listing in listings %}
-    <div class="listing">
+    <div class="listing" id="{{listing.id}}">
         <a href="{% url 'main:listing' id=listing.id %}" target="_blank"><img src="/media/listings/{{listing.id}}/main.jpg"></a>
         <a href="{% url 'main:listing' id=listing.id %}" target="_blank">
             {% if listing.uniq_type %}
@@ -41,46 +45,47 @@
         return "" + y + "-" + (m < 10 ? "0" : "") + m + "-" + (d < 10 ? "0" : "") + d;
     }
 
-    function applyDateFilter() {
-        $.ajax({
-            beforeSend: setCsrfToken,
-            type: "POST",
-            url: $("#filter-vals").find("#filter_url").val(),
-            data: {
-                fromDate: $("#filter-vals").find("#from").val(),
-                toDate: $("#filter-vals").find("#to").val(),
-            },
-            success: function(response) {
-                console.log(response);
-            },
-        });
+    function applyFilters() {
+        children = $("#listings-div").children();
+        let bookable_listing_ids_dict = null;
+        dict_str = $("#filter-vals").find("#bookable_listing_ids_dict_str").val();
+        if (dict_str) {
+            bookable_listing_ids_dict = JSON.parse(dict_str);
+        }
+        let showCount = 0;
+        if (children) {
+            for (let i = 0; i < children.length; ++i) {
+                if (!bookable_listing_ids_dict || children[i].id in bookable_listing_ids_dict) {
+                    $("#listings-div").find("#" + (i+1)).show();
+                    ++showCount;
+                } else {
+                    $("#listings-div").find("#" + (i+1)).hide();
+                }
+            }
+        }
+        $(".filter-bar").find("#num").text(showCount + " listing(s)");
     }
 
     $(document).ready(function() {
         $("#dates").click(function() {
-            let from = $("#filter-vals").find("#from");
-            let to = $("#filter-vals").find("#to");
+            let from_last = $("#filter-vals").find("#from_last");
+            let to_last = $("#filter-vals").find("#to_last");
 
-            if (from.val() && to.val()) {
-                from.val(null);
-                to.val(null);
-                $("#dates").css("background-color", "white");
-                $("#dates").css("color", "black");
-                $("#dates").text("Dates");
-            }
+            let from_tmp = $("#filter-vals").find("#from_tmp");
+            let to_tmp = $("#filter-vals").find("#to_tmp");
 
             let minDateStr = null;
             let storage = null;
             let title = null;
 
-            if (!from.val()) {
+            if (!from_tmp.val()) {
                 minDateStr = yyyymmdd(new Date());
-                storage = from;
-                title = "FROM Date:"
+                storage = from_tmp;
+                title = "*** FROM DATE ***"
             } else {
-                minDateStr = from.val();
-                storage = to;
-                title = "TO Date:"
+                minDateStr = from_tmp.val();
+                storage = to_tmp;
+                title = "*** TO DATE ***"
             }
 
             $("#dlg-cal").dialog({
@@ -94,40 +99,76 @@
                     let overlay = $(".ui-widget-overlay");
                     overlay.css({ "opacity": "0.7", "background-color": "black" });
                     overlay.click(function(event) {
-                        $("#dlg-cal").find("#dpDlg").datepicker("destroy");
                         $("#dlg-cal").dialog("close");
                     });
                 },
+                close: function() {
+                    $("#dlg-cal").find("#dpDlg").datepicker("destroy");
+
+                    if (!from_tmp.val() && !to_tmp.val() && !from_last.val() && !to_last.val()) {
+                        setTimeout(function() { applyFilters(); }, 100);
+                        return;
+                    }
+
+                    if (!storage.val()) {
+                        from_tmp.val(null);
+                        to_tmp.val(null);
+                        return;
+                    }
+
+                    if (from_tmp.val() && to_tmp.val()) {
+                        from_last.val(from_tmp.val());
+                        to_last.val(to_tmp.val());
+                        from_tmp.val(null);
+                        to_tmp.val(null);
+                        $("#dates").css("background-color", "rgb(0, 132, 137)");
+                        $("#dates").css("color", "white");
+                        $("#dates").text(from_last.val() + " thru " + to_last.val());
+                        $.ajax({
+                            beforeSend: setCsrfToken,
+                            type: "POST",
+                            url: $("#filter-vals").find("#filter_url").val(),
+                            data: {
+                                fromDate: from_last.val(),
+                                toDate: to_last.val(),
+                            },
+                            success: function(response) {
+                                if (response && response.bookable_listing_ids_dict_str) {
+                                    $("#filter-vals").find("#bookable_listing_ids_dict_str").val(response.bookable_listing_ids_dict_str);
+                                }
+                                applyFilters();
+                            },
+                        });
+                    }
+                },
                 buttons: {
-                    Clear: function() {
-                        from.val(null);
-                        to.val(null);
+                    "Clear Dates": function() {
+                        from_tmp.val(null);
+                        to_tmp.val(null);
+                        from_last.val(null);
+                        to_last.val(null);
+                        $("#filter-vals").find("#bookable_listing_ids_dict_str").val(null);
                         $("#dates").css("background-color", "white");
                         $("#dates").css("color", "black");
                         $("#dates").text("Dates");
-                        $("#dlg-cal").find("#dpDlg").datepicker("destroy");
                         $("#dlg-cal").dialog("close");
                     },
                 },
             });
+
             $("#dlg-cal").find("#dpDlg").datepicker({
                 dateFormat: "yy-mm-dd",
                 minDate: minDateStr,
                 onSelect: function() {
                     let dv = $("#dlg-cal").find("#dpDlg").datepicker("getDate");
                     storage.val(yyyymmdd(dv));
-                    if (storage == from) {
+                    if (storage == from_tmp) {
                         setTimeout(function() { $("#dates").trigger("click"); }, 100);
-                    } else {
-                        $("#dates").css("background-color", "rgb(0, 132, 137)");
-                        $("#dates").css("color", "white");
-                        $("#dates").text(from.val() + " thru " + to.val());
-                        setTimeout(function() { applyDateFilter(); }, 100);
                     }
-                    $("#dlg-cal").find("#dpDlg").datepicker("destroy");
                     $("#dlg-cal").dialog("close");
                 }
             });
+
             $("#dlg-cal").dialog("open");
         });
     });

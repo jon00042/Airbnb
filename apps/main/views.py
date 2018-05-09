@@ -64,9 +64,6 @@ def signup_ajax(request):
 def index(request):
     mock.create_users()
     mock.create_listings()
-    # db.create_booking('2018-03-24', '2018-04-04', 'bangkok1', 1000, 2, 2)
-    # db.cancel_booking(2)
-    # listing_ids = db.get_bookable_listings_ids('2018-03-25', '2018-03-30', db.get_all_listing_ids())
     context = {}
     context['listings'] = db.get_all_listings()
     return render(request, 'main/index.html', context)
@@ -74,13 +71,19 @@ def index(request):
 def filter_ajax(request):
     if request.method != 'POST':
         return JsonResponse({ 'url': redirect('main:index').url }, status=405)
+    response_data = {}
     from_date = request.POST.get('fromDate')
     to_date = request.POST.get('toDate')
-    bookable_listing_ids_qs = db.get_bookable_listings_ids(from_date, to_date)
-    bookable_listing_ids = []
-    for id in bookable_listing_ids_qs:
-        bookable_listing_ids.append(id)
-    return JsonResponse({ 'bookable_listing_ids': bookable_listing_ids })
+    if from_date and to_date:
+        bookable_listing_ids_qs = db.get_bookable_listings_ids(from_date, to_date)
+        dict_str = '{'
+        for listing_id in bookable_listing_ids_qs:
+            dict_str += ' "{}" : {}, '.format(listing_id, 1)
+        if len(dict_str) > 3:
+            dict_str = dict_str[:-2]
+        dict_str += ' }'
+        response_data['bookable_listing_ids_dict_str'] = dict_str;
+    return JsonResponse(response_data)
 
 def listing(request, id):
     context = {}

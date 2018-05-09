@@ -1,10 +1,16 @@
 {% extends 'main/base.html' %}
 
 {% block app %}
+<div class="filter-bar">
+    <button id="dates">Dates</button>
+    <input id="from" type="hidden" name="from">
+    <input id="to" type="hidden" name="to">
+    <button>Filters</button>
+</div>
 
-<div style="height: calc(100vh - 80px - 64px); overflow: scroll;" class="pl-2 pr-4">
+<div style="height: calc(100vh - 80px - 64px); overflow: scroll; padding-right: 30px;">
     {% for listing in listings %}
-    <div class="listing mt-5">
+    <div class="listing">
         <a href="{% url 'main:listing' id=listing.id %}" target="_blank"><img src="/media/listings/{{listing.id}}/main.jpg"></a>
         <a href="{% url 'main:listing' id=listing.id %}" target="_blank">
             {% if listing.uniq_type %}
@@ -21,5 +27,18 @@
 
 {% endblock %}
 
-{% block scripts %} {% endblock %}
+{% block scripts %}
+<script>
+    $("#dates").click(function(event) {
+        console.log("got here")
+        if (!$("#from").text()) {
+            $("#from").datepicker();
+            console.log($("#from").text())
+        } else {
+            $("#to").datepicker();
+            console.log($("#to").text())
+        }
+    });
+</script>
+{% endblock %}
 

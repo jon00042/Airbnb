@@ -16,18 +16,16 @@
 }
 
 body {
-    font-family: Arial, Helvetica, sans-serif;
+    color: rgb(72, 72, 72);
+    font-family: Helvetica, Arial, sans-serif;
+    font-size: 14px;
     margin: 0 auto;
-    display: none;
 }
 
 .nav-bar {
-    border-bottom: 1px solid rgb(228, 228, 228);
-}
-
-.nav-bar > div {
     display: table;
     height: 80px;
+    width: 100%;
 }
 
 .nav-logo-link {
@@ -65,20 +63,19 @@ body {
 }
 
 .nav-search-lg > div > form > input {
-    border: 1px solid white;
-    color: rgb(72, 72, 72);
+    border: 0;
+    font-family: Arial, Helvetica, sans-serif;
     font-size: 19px;
-    line-height: 24px;
+    margin-left: 10px;
+    margin-top: 12px;
     outline: none;
-    padding: 11px 11px 11px 11px;
-    width: 422px;
+    width: 400px;
 }
 
 .nav-search-sm {
     display: table-cell;
     width: 100%;
-    padding-top: 5px;
-    padding-bottom: 10px;
+    padding: 5px 25px 10px 0;
 }
 
 .nav-search-sm > div {
@@ -91,7 +88,7 @@ body {
     background: white;
     border: 1px solid #DBDBDB;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    color: rgb(72, 72, 72);
+    font-size: 14px;
     height: 100%;
     outline: none;
     width: 100%;
@@ -101,16 +98,21 @@ body {
     float: left;
 }
 
+.nav-menu {
+    display: table-cell;
+    width: 100%;
+}
+
 .nav-menu > ul {
     display: table;
+    float: right;
+    height: 100%;
     margin-bottom: 0;
+    margin-top: 0;
 }
 
 .nav-menu > ul > li {
     display: table-cell;
-    font-size: 14px;
-    height: 80px;
-    padding-top: 20px;
 }
 
 .nav-menu > ul > li:hover {
@@ -121,24 +123,30 @@ body {
     background: white;
     border: 0;
     color: rgb(72, 72, 72);
-    margin: 0 8px;
+    font-family: Helvetica, Arial, sans-serif;
+    font-size: 14px;
+    margin-right: 15px;
+    padding-left: 15px;
+    padding-top: 30px;
     outline: none;
-    padding: 8px 8px;
     white-space: nowrap;
 }
 
 .filter-bar {
     height: 64px;
     border-bottom: 1px solid rgb(228, 228, 228);
-    padding-left: 30px;
+    border-top: 1px solid rgb(228, 228, 228);
+    text-align: center;
 }
 
 .filter-bar > button {
     display: inline-block;
-    margin-top: 16px;
-    margin-left: 16px;
     background-color: white;
     border-radius: 4px;
+    font-size: 15px;
+    margin-top: 16px;
+    margin-right: 20px;
+    padding: 6px 12px 6px 12px;
     outline: none;
 }
 
@@ -159,7 +167,7 @@ body {
     .nav-search-lg {
         display: none;
     }
-    .nav-menu {
+    .nav-menu > ul {
         display: none;
     }
 }
@@ -176,7 +184,7 @@ body {
     .nav-search-lg {
         display: table-cell;
     }
-    .nav-menu {
+    .nav-menu > ul {
         display: none;
     }
 }
@@ -193,14 +201,14 @@ body {
     .nav-search-lg {
         display: table-cell;
     }
-    .nav-menu {
-        display: table-cell;
+    .nav-menu > ul {
+        display: table;
     }
 }
 
 .listing {
     display: inline-block;
-    margin: 10px;
+    margin: 15px;
     width: 100%;
 }
 
@@ -225,6 +233,6 @@ body {
 }
 @media (min-width: 1440px) {
     .listing {
-        width: 18%;
+        width: 17%;
     }
 }

@@ -71,6 +71,17 @@ def index(request):
     context['listings'] = db.get_all_listings()
     return render(request, 'main/index.html', context)
 
+def filter_ajax(request):
+    if request.method != 'POST':
+        return JsonResponse({ 'url': redirect('main:index').url }, status=405)
+    from_date = request.POST.get('fromDate')
+    to_date = request.POST.get('toDate')
+    bookable_listing_ids_qs = db.get_bookable_listings_ids(from_date, to_date)
+    bookable_listing_ids = []
+    for id in bookable_listing_ids_qs:
+        bookable_listing_ids.append(id)
+    return JsonResponse({ 'bookable_listing_ids': bookable_listing_ids })
+
 def listing(request, id):
     context = {}
     db.get_listing(id, context)

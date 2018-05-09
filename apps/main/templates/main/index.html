@@ -6,6 +6,7 @@
 <div id="filter-vals" style="display: none;">
     <input type="hidden" id="from">
     <input type="hidden" id="to">
+    <input type="hidden" id="filter_url" value="{% url 'main:filter_ajax' %}">
 </div>
 
 <div class="filter-bar">
@@ -39,6 +40,22 @@
         var d = dv.getDate();
         return "" + y + "-" + (m < 10 ? "0" : "") + m + "-" + (d < 10 ? "0" : "") + d;
     }
+
+    function applyDateFilter() {
+        $.ajax({
+            beforeSend: setCsrfToken,
+            type: "POST",
+            url: $("#filter-vals").find("#filter_url").val(),
+            data: {
+                fromDate: $("#filter-vals").find("#from").val(),
+                toDate: $("#filter-vals").find("#to").val(),
+            },
+            success: function(response) {
+                console.log(response);
+            },
+        });
+    }
+
     $(document).ready(function() {
         $("#dates").click(function() {
             let from = $("#filter-vals").find("#from");
@@ -105,6 +122,7 @@
                         $("#dates").css("background-color", "rgb(0, 132, 137)");
                         $("#dates").css("color", "white");
                         $("#dates").text(from.val() + " thru " + to.val());
+                        setTimeout(function() { applyDateFilter(); }, 100);
                     }
                     $("#dlg-cal").find("#dpDlg").datepicker("destroy");
                     $("#dlg-cal").dialog("close");

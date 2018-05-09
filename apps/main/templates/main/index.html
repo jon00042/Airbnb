@@ -1,18 +1,16 @@
 {% extends 'main/base.html' %}
 
 {% block app %}
+<div id="dlg-cal"><div id="dpDlg"></div></div>
+
+<div id="filter-vals" style="display: none;">
+    <input type="hidden" id="from">
+    <input type="hidden" id="to">
+</div>
+
 <div class="filter-bar">
     <button id="dates">Dates</button>
     <button id="filters">Filters</button>
-</div>
-
-<div id="dlg-cal" style="display: none">
-    <div style="text-align: center">Select Date</div>
-    <div style="width: 100%; height: 200px;"></div>
-    <div>
-        <a>Cancel</a>
-        <a style="float: right;">Apply</a>
-    </div>
 </div>
 
 <div style="height: calc(100vh - 80px - 64px); overflow: scroll; padding-right: 30px;">
@@ -35,34 +33,77 @@
 
 {% block scripts %}
 <script>
+    function yyyymmdd(dv) {
+        var y = dv.getFullYear();
+        var m = dv.getMonth() + 1;
+        var d = dv.getDate();
+        return "" + y + "-" + (m < 10 ? "0" : "") + m + "-" + (d < 10 ? "0" : "") + d;
+    }
     $(document).ready(function() {
-        $("#dates").click(function(event) {
-            event.preventDefault();
+        $("#dates").click(function() {
+            let from = $("#filter-vals").find("#from");
+            let to = $("#filter-vals").find("#to");
+
+            if (from.val() && to.val()) {
+                from.val(null);
+                to.val(null);
+                $("#dates").text("Dates");
+            }
+
+            let minDateStr = null;
+            let storage = null;
+            let title = null;
+
+            if (!from.val()) {
+                minDateStr = yyyymmdd(new Date());
+                storage = from;
+                title = "FROM Date:"
+            } else {
+                minDateStr = from.val();
+                storage = to;
+                title = "TO Date:"
+            }
+
             $("#dlg-cal").dialog({
-                draggable: false,
-                height: 260,
+                autoOpen: false,
+                height: 300,
                 modal: true,
                 resizable: false,
-                width: 400,
+                title: title,
+                width: 275,
                 open: function() {
-                    $("#dlg-cal").find("a").css("outline", "none");
                     let overlay = $(".ui-widget-overlay");
                     overlay.css({ "opacity": "0.7", "background-color": "black" });
                     overlay.click(function(event) {
+                        $("#dlg-cal").find("#dpDlg").datepicker("destroy");
                         $("#dlg-cal").dialog("close");
                     });
-                    let nowYYYYMMDD = new Date().toISOString().slice(0,10);
-                    $("#area").datepicker("option", "dateFormat", "yy-mm-dd");
-                    let x = ($(window).width() / 2) - 130;
-                    let y = $("#dlg-cal").offset().top + 30;
-                    let options = {
-                        onClose: function() {
-                            $("#dlg-cal").dialog("close");
-                        }
-                    };
-                    $("#dlg-cal").datepicker("dialog", nowYYYYMMDD, null, options, [x, y]);
+                },
+                buttons: {
+                    Clear: function() {
+                        from.val(null);
+                        to.val(null);
+                        $("#dlg-cal").find("#dpDlg").datepicker("destroy");
+                        $("#dlg-cal").dialog("close");
+                    },
                 },
             });
+            $("#dlg-cal").find("#dpDlg").datepicker({
+                dateFormat: "yy-mm-dd",
+                minDate: minDateStr,
+                onSelect: function() {
+                    let dv = $("#dlg-cal").find("#dpDlg").datepicker("getDate");
+                    storage.val(yyyymmdd(dv));
+                    if (storage == from) {
+                        setTimeout(function() { $("#dates").trigger("click"); }, 100);
+                    } else {
+                        $("#dates").text(from.val() + " thru " + to.val());
+                    }
+                    $("#dlg-cal").find("#dpDlg").datepicker("destroy");
+                    $("#dlg-cal").dialog("close");
+                }
+            });
+            $("#dlg-cal").dialog("open");
         });
     });
 </script>

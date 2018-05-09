@@ -7,15 +7,13 @@
     border: 1px dotted green;
 }
 
-.ui-dialog-titlebar {
+.no-close .ui-dialog-titlebar-close {
     display: none;
 }
 
-.ui-dialog-titlebar-close {
+.no-title .ui-dialog-titlebar {
     display: none;
 }
-
-.ui-datepicker{ z-index: 9999 !important;}
 
 body {
     color: rgb(72, 72, 72);

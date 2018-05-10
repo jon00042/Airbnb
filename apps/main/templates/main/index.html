@@ -8,11 +8,22 @@
     <div id="num" style="display: inline-block; padding-left: 10px;">{{listings|length}} listing(s)</div>
 </div>
 
-<div id="dates-div-orig" style="display: none;">
-    <input type="hidden" id="from_date">
-    <input type="hidden" id="to_date">
-    <div style="height: calc(100vh - 80px - 64px - 78px); overflow: scroll;">DATE SELECTION</div>
-    <div style="height: 78px; border-top: 1px solid rgb(219, 219, 219);">CANCEL or APPLY or CLEAR</div>
+<div id="dates-div" style="display: none;">
+    <div style="height: calc(100vh - 80px - 64px - 78px); overflow: scroll; text-align: center">
+        <div style="display: inline-block; margin-top: 20px; margin-right: 10%;">
+            <div style="margin-bottom: 20px; font-weight: bold; color: rgb(0, 132, 137);">FROM</div>
+            <div style="font-size: 15px;" id="dp_from"></div>
+        </div>
+        <div style="display: inline-block; margin-top: 20px; margin-right: 10%;">
+            <div style="margin-bottom: 20px; font-weight: bold; color: rgb(0, 132, 137);">TO</div>
+            <div style="font-size: 15px;" id="dp_to"></div>
+        </div>
+    </div>
+    <div style="font-size: 19px; height: 78px; border-top: 1px solid rgb(219, 219, 219); text-align: center; float: center;">
+        <div style="display: inline-block; width: 28%; height: 50px; padding-top: 20px;"><a id="reset" style="text-decoration: none; color: rgb(72, 72, 72); cursor: pointer;">Reset</a></div>
+        <div style="display: inline-block; width: 28%; height: 50px; padding-top: 20px;"><a id="cancel" style="text-decoration: none; color: rgb(72, 72, 72); cursor: pointer;">Cancel</a></div>
+        <div style="display: inline-block; width: 28%; height: 50px; padding-top: 10px;"><button id="apply" style="outline: none; font-size: 19px; color: white; background-color: rgb(0, 132, 137); width: 100px; height: 40px; border-radius: 4px; cursor: pointer;">Apply</button></div>
+    </div>
 </div>
 
 <div id="filters-div" style="display: none; font-size: 19px;">
@@ -108,10 +119,17 @@
 
     function getListableIds() {
         let data = {};
-        let items = [ "stay_type", "amenities", "facilities", "prop_type", "uniq_type" ];
 
-        for (let i = 0; i < items.length; ++i) {
-            let selector = "." + items[i];
+        let fromDate = $("#dates-div").attr("from_date");
+        let toDate = $("#dates-div").attr("to_date");
+        if (fromDate && toDate) {
+            data["from_date"] = fromDate;
+            data["to_date"] = toDate;
+        }
+
+        let filterItems = [ "stay_type", "amenities", "facilities", "prop_type", "uniq_type" ];
+        for (let i = 0; i < filterItems.length; ++i) {
+            let selector = "." + filterItems[i];
             let vals = [];
             $(selector).each(function() {
                 if ($(this).prop("checked"))
@@ -119,11 +137,12 @@
                     vals.push($(this).attr("name"));
                 }
             });
-
             if (vals.length > 0) {
-                data[items[i]] = JSON.stringify(vals);
+                data[filterItems[i]] = JSON.stringify(vals);
             }
         }
+
+        console.log(data);
 
         $.ajax({
             beforeSend: setCsrfToken,
@@ -154,116 +173,81 @@
                 }
             }
         });
-        // $("#criteria-bar").find("#dates").click(function(event) {
-        //     let from_last_input = $("#criteria-vals").find("#from_last");
-        //     let to_last_input = $("#criteria-vals").find("#to_last");
-        //     let dict_str_input = $("#criteria-vals").find("#bookable_listing_ids_dict_str");
-
-        //     let from_tmp_input = $("#criteria-vals").find("#from_tmp");
-        //     let to_tmp_input = $("#criteria-vals").find("#to_tmp");
-
-        //     let minDateStr = null;
-        //     let cur_input = null;
-        //     let title = null;
-
-        //     if (!from_tmp_input.val()) {
-        //         minDateStr = yyyymmdd(new Date());
-        //         cur_input = from_tmp_input;
-        //         title = "*** FROM DATE ***"
-        //     } else {
-        //         minDateStr = from_tmp_input.val();
-        //         cur_input = to_tmp_input;
-        //         title = "*** TO DATE ***"
-        //     }
-
-        //     $("#dlg-cal").dialog({
-        //         autoOpen: false,
-        //         height: 300,
-        //         modal: true,
-        //         resizable: false,
-        //         title: title,
-        //         width: 275,
-        //         open: function() {
-        //             let overlay = $(".ui-widget-overlay");
-        //             overlay.css({ "opacity": "0.7", "background-color": "white" });
-        //             overlay.click(function(event) {
-        //                 $("#dlg-cal").dialog("close");
-        //             });
-        //         },
-        //         close: function() {
-        //             $("#dlg-cal").find("#dpDlg").datepicker("destroy");
-
-        //             if (!cur_input.val()) {
-        //                 from_tmp_input.val(null);
-        //                 to_tmp_input.val(null);
-        //                 return;
-        //             }
-
-        //             if (from_tmp_input.val() && !to_tmp_input.val())
-        //             {
-        //                 setTimeout(function() { $("#criteria-bar").find("#dates").trigger("click"); }, 100);
-        //                 return;
-        //             }
-
-        //             from_last_input.val(from_tmp_input.val());
-        //             to_last_input.val(to_tmp_input.val());
-
-        //             from_tmp_input.val(null);
-        //             to_tmp_input.val(null);
-
-        //             if (from_last_input.val() && to_last_input.val()) {
-        //                 $.ajax({
-        //                     beforeSend: setCsrfToken,
-        //                     type: "POST",
-        //                     url: $("#criteria-vals").find("#criteria_url").val(),
-        //                     data: {
-        //                         from_date: from_last_input.val(),
-        //                         to_date: to_last_input.val(),
-        //                     },
-        //                     success: function(response) {
-        //                         let dict_str = null;
-        //                         if (response) {
-        //                             dict_str = response.bookable_listing_ids_dict_str;
-        //                         }
-        //                         dict_str_input.val(dict_str);
-        //                         applyFilters();
-        //                     },
-        //                 });
-        //             } else {
-        //                 dict_str_input.val(null);
-        //                 setTimeout(function() { applyFilters(); }, 100);
-        //             }
-        //         },
-        //         buttons: {
-        //             "Clear Dates": function() {
-        //                 from_tmp_input.val(null);
-        //                 to_tmp_input.val(null);
-        //                 from_last_input.val(null);
-        //                 to_last_input.val(null);
-        //                 dict_str_input.val(null);
-        //                 $("#dlg-cal").dialog("close");
-        //                 setTimeout(function() { applyFilters(); }, 100);
-        //             },
-        //         },
-        //     });
-
-        //     $("#dlg-cal").find("#dpDlg").datepicker({
-        //         dateFormat: "yy-mm-dd",
-        //         minDate: minDateStr,
-        //         onSelect: function() {
-        //             let dv = $("#dlg-cal").find("#dpDlg").datepicker("getDate");
-        //             cur_input.val(yyyymmdd(dv));
-        //             $("#dlg-cal").dialog("close");
-        //         }
-        //     });
-
-        //     $("#dlg-cal").dialog("open");
-        // });
 
         $("#criteria-bar").find("#dates").click(function(event) {
             if ($("#dates-div-clone").length || $("#filters-div-clone").length) {
                 return;
             }
+
+            let orig = $("#dates-div");
+            let clone = orig.clone().attr("id", "dates-div-clone");
+            fromDp = clone.find("#dp_from").attr("id", "dp_from_clone");
+            toDp = clone.find("#dp_to").attr("id", "dp_to_clone");
+            clone.insertAfter(orig);
+
+            today = new Date();
+            tomorrow = new Date();
+            tomorrow.setDate(today.getDate() + 1);
+            today = yyyymmdd(today);
+            tomorrow = yyyymmdd(tomorrow);
+
+            fromDp.datepicker({
+                dateFormat: "yy-mm-dd",
+                minDate: today,
+                onSelect: function(value) {
+                    let dv = new Date(value);
+                    dv.setDate(dv.getDate() + 1);
+                    dv = yyyymmdd(dv);
+                    toDp.datepicker("option", "minDate", dv);
+                    toDp.datepicker("setDate", dv);
+                }
+            });
+
+            toDp.datepicker({
+                dateFormat: "yy-mm-dd",
+                minDate: tomorrow,
+            });
+
+            let initFromDate = clone.attr("from_date");
+            let initToDate = clone.attr("to_date");
+
+            if (initFromDate && initToDate) {
+                fromDp.datepicker("setDate", initFromDate);
+                toDp.datepicker("setDate", initToDate);
+            }
+
+            clone.find("#cancel").click(function(event) {
+                event.preventDefault();
+                fromDp.datepicker("destroy");
+                toDp.datepicker("destroy");
+                clone.remove();
+                $("#listings-div").show();
+            });
+
+            clone.find("#reset").click(function(event) {
+                event.preventDefault();
+                fromDp.datepicker("destroy");
+                toDp.datepicker("destroy");
+                clone.remove();
+                orig.attr("from_date", null);
+                orig.attr("to_date", null);
+                $("#listings-div").show();
+                setTimeout(function() { getListableIds(); }, 100);
+            });
+
+            clone.find("#apply").click(function(event) {
+                event.preventDefault();
+                orig.attr("from_date", yyyymmdd(fromDp.datepicker("getDate")));
+                orig.attr("to_date", yyyymmdd(toDp.datepicker("getDate")));
+                fromDp.datepicker("destroy");
+                toDp.datepicker("destroy");
+                clone.remove();
+                $("#listings-div").show();
+                setTimeout(function() { getListableIds(); }, 100);
+            });
+
+            $("#listings-div").hide();
+            clone.show();
         });
 
         $("#criteria-bar").find("#filters").click(function(event) {
@@ -291,9 +275,9 @@
 
             clone.find("#apply").click(function(event) {
                 event.preventDefault();
-                orig.remove();
                 clone.attr("id", "filters-div");
                 clone.hide();
+                orig.remove();
                 $("#listings-div").show();
                 setTimeout(function() { getListableIds(); }, 100);
             });

@@ -7,6 +7,7 @@ import json
 
 from django.db import transaction
 from django.db.models import Count
+from pprint import pprint
 
 def ensure_date(val):
     if  type(val) == datetime.date:

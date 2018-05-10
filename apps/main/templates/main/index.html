@@ -96,7 +96,7 @@
         }
         let showCount = 0;
         $("#listings-div").children().each(function() {
-            if (!ids_dict || !Object.keys(ids_dict).length || $(this).attr("id") in ids_dict) {
+            if (ids_dict && Object.keys(ids_dict).length && $(this).attr("id") in ids_dict) {
                 $(this).show();
                 ++showCount;
             } else {

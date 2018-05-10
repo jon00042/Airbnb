@@ -7,14 +7,6 @@
     border: 1px dotted green;
 }
 
-.no-close .ui-dialog-titlebar-close {
-    display: none;
-}
-
-.no-title .ui-dialog-titlebar {
-    display: none;
-}
-
 body {
     color: rgb(72, 72, 72);
     font-family: Helvetica, Arial, sans-serif;
@@ -218,6 +210,7 @@ body {
 }
 
 .listing > a > img {
+    border-radius: 3px;
     max-width: 100%;
 }
 

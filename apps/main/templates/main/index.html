@@ -2,6 +2,7 @@
 
 {% block app %}
 <div id="dlg-cal"><div id="dpDlg"></div></div>
+<div id="dlg-attrs" style="display: none;"></div>
 
 <div id="filter-vals" style="display: none;">
     <input type="hidden" id="filter_url" value="{% url 'main:filter_ajax' %}">
@@ -10,11 +11,17 @@
     <input type="hidden" id="bookable_listing_ids_dict_str">
     <input type="hidden" id="from_last">
     <input type="hidden" id="to_last">
+    <input type="hidden" id="amenities_last">
+    <input type="hidden" id="facilities_last">
+    <input type="hidden" id="rules_last">
+    <input type="hidden" id="amenities_tmp">
+    <input type="hidden" id="facilities_tmp">
+    <input type="hidden" id="rules_tmp">
 </div>
 
 <div class="filter-bar">
     <button id="dates">Dates</button>
-    <button id="filters">Filters</button>
+    <button id="attrs">Filters</button>
     <div id="num" style="display: inline-block; padding-left: 10px;">{{listings|length}} listing(s)</div>
 </div>
 
@@ -46,20 +53,47 @@
     }
 
     function applyFilters() {
-        children = $("#listings-div").children();
+        let from_last_str = $("#filter-vals").find("#from_last").val();
+        let to_last_str = $("#filter-vals").find("#to_last").val();
+        let dict_str = $("#filter-vals").find("#bookable_listing_ids_dict_str").val();
         let bookable_listing_ids_dict = null;
-        dict_str = $("#filter-vals").find("#bookable_listing_ids_dict_str").val();
         if (dict_str) {
             bookable_listing_ids_dict = JSON.parse(dict_str);
         }
+
+        if (from_last_str && to_last_str) {
+            $("#dates").css("color", "white");
+            $("#dates").css("background-color", "rgb(0, 132, 137)");
+            $("#dates").text(from_last_str + " thru " + to_last_str);
+        } else {
+            $("#dates").css("color", "black");
+            $("#dates").css("background-color", "white");
+            $("#dates").text("Dates");
+        }
+
+        let amenities_last_str = $("#filter-vals").find("#amenities_last").val();
+        let facilities_last_str = $("#filter-vals").find("#facilities_last").val();
+        let rules_last_str = $("#filter-vals").find("#rules_last").val();
+
+        if (amenities_last_str || facilities_last_str || rules_last_str) {
+            $("#attrs").css("color", "white");
+            $("#attrs").css("background-color", "rgb(0, 132, 137)");
+        } else {
+            $("#attrs").css("color", "black");
+            $("#attrs").css("background-color", "white");
+        }
+
+        children = $("#listings-div").children();
         let showCount = 0;
         if (children) {
             for (let i = 0; i < children.length; ++i) {
-                if (!bookable_listing_ids_dict || children[i].id in bookable_listing_ids_dict) {
-                    $("#listings-div").find("#" + (i+1)).show();
+                selector = "#" + (i + 1);
+                showable = !bookable_listing_ids_dict || children[i].id in bookable_listing_ids_dict;
+                if (showable) {
+                    $("#listings-div").find(selector).show();
                     ++showCount;
                 } else {
-                    $("#listings-div").find("#" + (i+1)).hide();
+                    $("#listings-div").find(selector).hide();
                 }
             }
         }
@@ -68,23 +102,24 @@
 
     $(document).ready(function() {
         $("#dates").click(function() {
-            let from_last = $("#filter-vals").find("#from_last");
-            let to_last = $("#filter-vals").find("#to_last");
+            let from_last_input = $("#filter-vals").find("#from_last");
+            let to_last_input = $("#filter-vals").find("#to_last");
+            let dict_str_input = $("#filter-vals").find("#bookable_listing_ids_dict_str");
 
-            let from_tmp = $("#filter-vals").find("#from_tmp");
-            let to_tmp = $("#filter-vals").find("#to_tmp");
+            let from_tmp_input = $("#filter-vals").find("#from_tmp");
+            let to_tmp_input = $("#filter-vals").find("#to_tmp");
 
             let minDateStr = null;
-            let storage = null;
+            let cur_input = null;
             let title = null;
 
-            if (!from_tmp.val()) {
+            if (!from_tmp_input.val()) {
                 minDateStr = yyyymmdd(new Date());
-                storage = from_tmp;
+                cur_input = from_tmp_input;
                 title = "*** FROM DATE ***"
             } else {
-                minDateStr = from_tmp.val();
-                storage = to_tmp;
+                minDateStr = from_tmp_input.val();
+                cur_input = to_tmp_input;
                 title = "*** TO DATE ***"
             }
 
@@ -97,7 +132,7 @@
                 width: 275,
                 open: function() {
                     let overlay = $(".ui-widget-overlay");
-                    overlay.css({ "opacity": "0.7", "background-color": "black" });
+                    overlay.css({ "opacity": "0.7", "background-color": "white" });
                     overlay.click(function(event) {
                         $("#dlg-cal").dialog("close");
                     });
@@ -105,53 +140,56 @@
                 close: function() {
                     $("#dlg-cal").find("#dpDlg").datepicker("destroy");
 
-                    if (!from_tmp.val() && !to_tmp.val() && !from_last.val() && !to_last.val()) {
-                        setTimeout(function() { applyFilters(); }, 100);
+                    if (!cur_input.val()) {
+                        from_tmp_input.val(null);
+                        to_tmp_input.val(null);
                         return;
                     }
 
-                    if (!storage.val()) {
-                        from_tmp.val(null);
-                        to_tmp.val(null);
+                    if (from_tmp_input.val() && !to_tmp_input.val())
+                    {
+                        setTimeout(function() { $("#dates").trigger("click"); }, 100);
                         return;
                     }
 
-                    if (from_tmp.val() && to_tmp.val()) {
-                        from_last.val(from_tmp.val());
-                        to_last.val(to_tmp.val());
-                        from_tmp.val(null);
-                        to_tmp.val(null);
-                        $("#dates").css("background-color", "rgb(0, 132, 137)");
-                        $("#dates").css("color", "white");
-                        $("#dates").text(from_last.val() + " thru " + to_last.val());
+                    from_last_input.val(from_tmp_input.val());
+                    to_last_input.val(to_tmp_input.val());
+
+                    from_tmp_input.val(null);
+                    to_tmp_input.val(null);
+
+                    if (from_last_input.val() && to_last_input.val()) {
                         $.ajax({
                             beforeSend: setCsrfToken,
                             type: "POST",
                             url: $("#filter-vals").find("#filter_url").val(),
                             data: {
-                                fromDate: from_last.val(),
-                                toDate: to_last.val(),
+                                from_date: from_last_input.val(),
+                                to_date: to_last_input.val(),
                             },
                             success: function(response) {
-                                if (response && response.bookable_listing_ids_dict_str) {
-                                    $("#filter-vals").find("#bookable_listing_ids_dict_str").val(response.bookable_listing_ids_dict_str);
+                                let dict_str = null;
+                                if (response) {
+                                    dict_str = response.bookable_listing_ids_dict_str;
                                 }
+                                dict_str_input.val(dict_str);
                                 applyFilters();
                             },
                         });
+                    } else {
+                        dict_str_input.val(null);
+                        setTimeout(function() { applyFilters(); }, 100);
                     }
                 },
                 buttons: {
                     "Clear Dates": function() {
-                        from_tmp.val(null);
-                        to_tmp.val(null);
-                        from_last.val(null);
-                        to_last.val(null);
-                        $("#filter-vals").find("#bookable_listing_ids_dict_str").val(null);
-                        $("#dates").css("background-color", "white");
-                        $("#dates").css("color", "black");
-                        $("#dates").text("Dates");
+                        from_tmp_input.val(null);
+                        to_tmp_input.val(null);
+                        from_last_input.val(null);
+                        to_last_input.val(null);
+                        dict_str_input.val(null);
                         $("#dlg-cal").dialog("close");
+                        setTimeout(function() { applyFilters(); }, 100);
                     },
                 },
             });
@@ -161,15 +199,72 @@
                 minDate: minDateStr,
                 onSelect: function() {
                     let dv = $("#dlg-cal").find("#dpDlg").datepicker("getDate");
-                    storage.val(yyyymmdd(dv));
-                    if (storage == from_tmp) {
-                        setTimeout(function() { $("#dates").trigger("click"); }, 100);
-                    }
+                    cur_input.val(yyyymmdd(dv));
                     $("#dlg-cal").dialog("close");
                 }
             });
 
             $("#dlg-cal").dialog("open");
+        });
+
+        $("#attrs").click(function() {
+            let amenities_last_input = $("#filter-vals").find("#amenities_last");
+            let facilities_last_input = $("#filter-vals").find("#facilities_last");
+            let rules_last_input = $("#filter-vals").find("#rules_last");
+
+            let amenities_tmp_input = $("#filter-vals").find("#amenities_tmp");
+            let facilities_tmp_input = $("#filter-vals").find("#facilities_tmp");
+            let rules_tmp_input = $("#filter-vals").find("#rules_tmp");
+
+            let height = 300;
+            let width = 300;
+
+            $("#dlg-attrs").dialog({
+                autoOpen: false,
+                height: height,
+                modal: true,
+                resizable: false,
+                width: width,
+                open: function() {
+                    let overlay = $(".ui-widget-overlay");
+                    overlay.css({ "opacity": "0.7", "background-color": "white" });
+                    overlay.click(function(event) {
+                        $("#dlg-attrs").dialog("close");
+                    });
+                },
+                close: function() {
+                    amenities_last_input.val(amenities_tmp_input.val());
+                    facilities_last_input.val(facilities_tmp_input.val());
+                    rules_last_input.val(rules_tmp_input.val());
+
+                    amenities_tmp_input.val(null);
+                    facilities_tmp_input.val(null);
+                    rules_tmp_input.val(null);
+
+                    if (amenities_last_input.val() || facilities_last_input.val() || rules_last_input.val()) {
+                        $.ajax({
+                            beforeSend: setCsrfToken,
+                            type: "POST",
+                            url: $("#filter-vals").find("#filter_url").val(),
+                            data: {
+                                amenities: amenities_last_input.val(),
+                                facilities: facilities_last_input.val(),
+                                rules: rules_last_input.val(),
+                            },
+                            success: function(response) {
+                                if (response) {
+                                    // $("#filter-vals").find("#x").val(response.x);
+                                }
+                                applyFilters();
+                            },
+                        });
+                    } else {
+                        setTimeout(function() { applyFilters(); }, 100);
+                    }
+                },
+            });
+
+            $("#dlg-attrs").dialog("open");
         });
     });
 </script>

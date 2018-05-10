@@ -72,8 +72,8 @@ def filter_ajax(request):
     if request.method != 'POST':
         return JsonResponse({ 'url': redirect('main:index').url }, status=405)
     response_data = {}
-    from_date = request.POST.get('fromDate')
-    to_date = request.POST.get('toDate')
+    from_date = request.POST.get('from_date')
+    to_date = request.POST.get('to_date')
     if from_date and to_date:
         bookable_listing_ids_qs = db.get_bookable_listings_ids(from_date, to_date)
         dict_str = '{'

@@ -22,8 +22,7 @@
         <div style="border-top: 1px solid rgb(219, 219, 219); font-weight: 400; margin-top: 15px; padding-top: 15px; margin-bottom: 15px;">Home type</div>
         {% for item in all_stay_types %}
             <div style="display: inline-block; width: 230px; white-space: nowrap;">
-                <input class="stay_type" style="zoom: 1.5;" type="checkbox" name="{{item}}">
-                {{item}}
+                <label><input class="stay_type" style="zoom: 1.5;" type="checkbox" name="{{item}}">{{item}}</label>
             </div>
         {% endfor %}
         <div style="border-top: 1px solid rgb(219, 219, 219); font-weight: 400; margin-top: 15px; padding-top: 15px; margin-bottom: 15px;">Rooms and beds</div>
@@ -31,29 +30,25 @@
         <div style="border-top: 1px solid rgb(219, 219, 219); font-weight: 400; margin-top: 15px; padding-top: 15px; margin-bottom: 15px;">Amenities</div>
         {% for item in all_amenities %}
             <div style="display: inline-block; width: 230px; white-space: nowrap;">
-                <input class="amenities" style="zoom: 1.5;" type="checkbox" name="{{item}}">
-                {{item}}
+                <label><input class="amenities" style="zoom: 1.5;" type="checkbox" name="{{item}}">{{item}}</label>
             </div>
         {% endfor %}
         <div style="border-top: 1px solid rgb(219, 219, 219); font-weight: 400; margin-top: 15px; padding-top: 15px; margin-bottom: 15px;">Facilities</div>
         {% for item in all_facilities %}
             <div style="display: inline-block; width: 230px; white-space: nowrap;">
-                <input class="facilities" style="zoom: 1.5;" type="checkbox" name="{{item}}">
-                {{item}}
+                <label><input class="facilities" style="zoom: 1.5;" type="checkbox" name="{{item}}">{{item}}</label>
             </div>
         {% endfor %}
         <div style="border-top: 1px solid rgb(219, 219, 219); font-weight: 400; margin-top: 15px; padding-top: 15px; margin-bottom: 15px;">Property type</div>
         {% for item in all_prop_types %}
             <div style="display: inline-block; width: 230px; white-space: nowrap;">
-                <input class="prop_type" style="zoom: 1.5;" type="checkbox" name="{{item}}">
-                {{item}}
+                <label><input class="prop_type" style="zoom: 1.5;" type="checkbox" name="{{item}}">{{item}}</label>
             </div>
         {% endfor %}
         <div style="border-top: 1px solid rgb(219, 219, 219); font-weight: 400; margin-top: 15px; padding-top: 15px; margin-bottom: 15px;">Unique homes</div>
         {% for item in all_uniq_types %}
             <div style="display: inline-block; width: 230px; white-space: nowrap;">
-                <input class="uniq_type" style="zoom: 1.5;" type="checkbox" name="{{item}}">
-                {{item}}
+                <label><input class="uniq_type" style="zoom: 1.5;" type="checkbox" name="{{item}}">{{item}}</label>
             </div>
         {% endfor %}
         <div style="border-top: 1px solid rgb(219, 219, 219); font-weight: 400; margin-top: 15px; padding-top: 15px; margin-bottom: 15px;">House rules</div>
@@ -61,8 +56,8 @@
         <div style="height: 20px;"></div>
     </div>
     <div style="height: 78px; border-top: 1px solid rgb(219, 219, 219); text-align: center; float: center;">
-        <div style="display: inline-block; width: 28%; height: 50px; padding-top: 20px;"><a href="" id="reset" style="text-decoration: none; color: rgb(72, 72, 72);">Reset</a></div>
-        <div style="display: inline-block; width: 28%; height: 50px; padding-top: 20px;"><a href="" id="cancel" style="text-decoration: none; color: rgb(72, 72, 72);">Cancel</a></div>
+        <div style="display: inline-block; width: 28%; height: 50px; padding-top: 20px;"><a id="reset" style="text-decoration: none; color: rgb(72, 72, 72); cursor: pointer;">Reset</a></div>
+        <div style="display: inline-block; width: 28%; height: 50px; padding-top: 20px;"><a id="cancel" style="text-decoration: none; color: rgb(72, 72, 72); cursor: pointer;">Cancel</a></div>
         <div style="display: inline-block; width: 28%; height: 50px; padding-top: 10px;"><button id="apply" style="outline: none; font-size: 19px; color: white; background-color: rgb(0, 132, 137); width: 100px; height: 40px; border-radius: 4px; cursor: pointer;">Apply</button></div>
     </div>
 </div>
@@ -148,40 +143,17 @@
         });
     }
 
-    // function applyFilters() {
-    //     let from_last_str = $("#criteria-vals").find("#from_last").val();
-    //     let to_last_str = $("#criteria-vals").find("#to_last").val();
-    //     let dict_str = $("#criteria-vals").find("#bookable_listing_ids_dict_str").val();
-    //     let bookable_listing_ids_dict = null;
-    //     if (dict_str) {
-    //         bookable_listing_ids_dict = JSON.parse(dict_str);
-    //     }
-
-    //     if (from_last_str && to_last_str) {
-    //         $("#criteria-bar").find("#dates").css("color", "white");
-    //         $("#criteria-bar").find("#dates").css("background-color", "rgb(0, 132, 137)");
-    //         $("#criteria-bar").find("#dates").text(from_last_str + " thru " + to_last_str);
-    //     } else {
-    //         $("#criteria-bar").find("#dates").css("color", "black");
-    //         $("#criteria-bar").find("#dates").css("background-color", "white");
-    //         $("#criteria-bar").find("#dates").text("Dates");
-    //     }
-
-    //     let amenities_last_str = $("#criteria-vals").find("#amenities_last").val();
-    //     let facilities_last_str = $("#criteria-vals").find("#facilities_last").val();
-    //     let rules_last_str = $("#criteria-vals").find("#rules_last").val();
-
-    //     if (amenities_last_str || facilities_last_str || rules_last_str) {
-    //         $("#filters").css("color", "white");
-    //         $("#filters").css("background-color", "rgb(0, 132, 137)");
-    //     } else {
-    //         $("#filters").css("color", "black");
-    //         $("#filters").css("background-color", "white");
-    //     }
-
-    // }
-
     $(document).ready(function() {
+        $("body").keydown(function(event) {
+            if (event.keyCode == 27) {
+                if ($("#dates-div-clone").length) {
+                    $("#dates-div-clone").find("#cancel").trigger("click");
+                }
+                if ($("#filters-div-clone").length) {
+                    $("#filters-div-clone").find("#cancel").trigger("click");
+                }
+            }
+        });
         // $("#criteria-bar").find("#dates").click(function(event) {
         //     let from_last_input = $("#criteria-vals").find("#from_last");
         //     let to_last_input = $("#criteria-vals").find("#to_last");
@@ -287,6 +259,7 @@
 
         //     $("#dlg-cal").dialog("open");
         // });
+
         $("#criteria-bar").find("#dates").click(function(event) {
             if ($("#dates-div-clone").length || $("#filters-div-clone").length) {
                 return;
@@ -328,67 +301,6 @@
             $("#listings-div").hide();
             clone.show();
         });
-
-        // $("#filters").click(function() {
-        //     let amenities_last_input = $("#criteria-vals").find("#amenities_last");
-        //     let facilities_last_input = $("#criteria-vals").find("#facilities_last");
-        //     let rules_last_input = $("#criteria-vals").find("#rules_last");
-
-        //     let amenities_tmp_input = $("#criteria-vals").find("#amenities_tmp");
-        //     let facilities_tmp_input = $("#criteria-vals").find("#facilities_tmp");
-        //     let rules_tmp_input = $("#criteria-vals").find("#rules_tmp");
-
-        //     let height = 500;
-        //     let width = 500;
-
-        //     $("#dlg-filters").dialog({
-        //         autoOpen: false,
-        //         dialogClass: "no-close no-title",
-        //         height: height,
-        //         modal: true,
-        //         resizable: false,
-        //         width: width,
-        //         // open: function() {
-        //         //     let overlay = $(".ui-widget-overlay");
-        //         //     overlay.css({ "opacity": "0.7", "background-color": "white" });
-        //         //     overlay.click(function(event) {
-        //         //         $("#dlg-filters").dialog("close");
-        //         //     });
-        //         // },
-        //         close: function() {
-        //             amenities_last_input.val(amenities_tmp_input.val());
-        //             facilities_last_input.val(facilities_tmp_input.val());
-        //             rules_last_input.val(rules_tmp_input.val());
-
-        //             amenities_tmp_input.val(null);
-        //             facilities_tmp_input.val(null);
-        //             rules_tmp_input.val(null);
-
-        //             if (amenities_last_input.val() || facilities_last_input.val() || rules_last_input.val()) {
-        //                 $.ajax({
-        //                     beforeSend: setCsrfToken,
-        //                     type: "POST",
-        //                     url: $("#criteria-vals").find("#criteria_url").val(),
-        //                     data: {
-        //                         amenities: amenities_last_input.val(),
-        //                         facilities: facilities_last_input.val(),
-        //                         rules: rules_last_input.val(),
-        //                     },
-        //                     success: function(response) {
-        //                         if (response) {
-        //                             // $("#criteria-vals").find("#x").val(response.x);
-        //                         }
-        //                         applyFilters();
-        //                     },
-        //                 });
-        //             } else {
-        //                 setTimeout(function() { applyFilters(); }, 100);
-        //             }
-        //         },
-        //     });
-
-        //     $("#dlg-filters").dialog("open");
-        // });
     });
 </script>
 {% endblock %}

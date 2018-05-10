@@ -63,17 +63,24 @@ class Listing(models.Model):
     ################
     @property
     def stay_type_str(self):
-        return const.STAY_TYPE[self.stay_type]
+        arr = const.mask_to_list(const.STAY_TYPE, self.stay_type)
+        if not arr or len(arr) < 1:
+            return ''
+        return arr[0]
     ################
     @property
     def prop_type_str(self):
-        return const.PROP_TYPE[self.prop_type]
+        arr = const.mask_to_list(const.PROP_TYPE, self.prop_type)
+        if not arr or len(arr) < 1:
+            return ''
+        return arr[0]
     ################
     @property
     def uniq_type_str(self):
-        if self.uniq_type is None:
+        arr = const.mask_to_list(const.UNIQ_TYPE, self.uniq_type)
+        if not arr or len(arr) < 1:
             return ''
-        return const.UNIQ_TYPE[self.uniq_type]
+        return arr[0]
     ################
     @property
     def amenities_list(self):
@@ -83,10 +90,10 @@ class Listing(models.Model):
     def facilities_list(self):
         return const.mask_to_list(const.FACILITIES, self.facilities_mask)
     ################
-    @property
-    def rules_list(self):
-        print(const.RULES)
-        return const.mask_to_list(const.RULES, self.rules_mask)
+    # @property
+    # def rules_list(self):
+    #     print(const.RULES)
+    #     return const.mask_to_list(const.RULES, self.rules_mask)
 
 class Booking(models.Model):
     name = models.CharField(max_length=256)

@@ -132,14 +132,14 @@ body {
     white-space: nowrap;
 }
 
-.filter-bar {
+#criteria-bar {
     height: 64px;
     border-bottom: 1px solid rgb(228, 228, 228);
     border-top: 1px solid rgb(228, 228, 228);
     text-align: center;
 }
 
-.filter-bar > button {
+#criteria-bar > button {
     display: inline-block;
     background-color: white;
     border-radius: 4px;
@@ -150,7 +150,7 @@ body {
     outline: none;
 }
 
-.filter-bar > button:hover {
+#criteria-bar > button:hover {
     background-color: lightgrey;
 }
 

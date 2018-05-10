@@ -1,12 +1,12 @@
-import apps.main.models as m
 import apps.main.constants as const
+import apps.main.models as m
 import datetime
 import dateutil.parser
 import django
+import json
 
 from django.db import transaction
 from django.db.models import Count
-from pprint import pprint
 
 def ensure_date(val):
     if  type(val) == datetime.date:
@@ -85,23 +85,51 @@ def cancel_booking_trans(booking_id):
     m.BookingState.objects.filter(booking_id=booking_id).update(booking_id=None)
     return booking
 
-def get_bookable_listings_ids(from_date, to_date):
-    from_date = ensure_date(from_date)
-    to_date = ensure_date(to_date)
-    if  from_date > to_date:
-        return None, '{} thru {}: invalid date range!'.format(from_date, to_date)
-    num_days = (to_date - from_date).days + 1
-    try:
-        free_dates = m.BookingState.objects.filter(the_date__gte=from_date).filter(the_date__lte=to_date).filter(booking_id=None)
-        listing_ids = free_dates.values('listing_id').annotate(count=Count('the_date')).filter(count=num_days).values_list('listing_id', flat=True)
-        return listing_ids
-    except Exception as ex:
-        print('{}: {}'.format(type(ex), ex))
-        return None, str(ex)
-
 def get_all_listings():
     try:
         return m.Listing.objects.all()
     except Exception as ex:
         print('{}: {}'.format(type(ex), ex))
         return None, str(ex)
+
+def get_bookable_listings(from_date, to_date):
+    if from_date or to_date:  # sic: wan't to raise an error
+        try:
+            from_date = ensure_date(from_date)
+            to_date = ensure_date(to_date)
+            if  from_date > to_date:
+                raise Exception('{} thru {}: invalid date range!'.format(from_date, to_date))
+            num_days = (to_date - from_date).days + 1
+            listing_ids = m.BookingState.objects.filter(the_date__gte=from_date).filter(the_date__lte=to_date).filter(booking_id=None).values('listing_id').distinct()
+            return m.Listing.objects.filter(id__in=listing_ids)
+        except Exception as ex:
+            print('{}: {}'.format(type(ex), ex))
+    try:
+        return m.Listing.objects.all()
+    except Exception as ex:
+        print('{}: {}'.format(type(ex), ex))
+
+def get_filtered_listing_ids_dict(criteria_dict):
+    from_date = criteria_dict.get('from_date')
+    to_date = criteria_dict.get('to_date')
+    listings = get_bookable_listings(from_date, to_date)
+    stay_type_mask = const.list_to_mask(const.STAY_TYPE, criteria_dict.get('stay_type'))
+    prop_type_mask = const.list_to_mask(const.PROP_TYPE, criteria_dict.get('prop_type'))
+    amenities_mask = const.list_to_mask(const.AMENITIES, criteria_dict.get('amenities'))
+    facilities_mask = const.list_to_mask(const.FACILITIES, criteria_dict.get('facilities'))
+    uniq_type_mask = const.list_to_mask(const.UNIQ_TYPE, criteria_dict.get('uniq_type'))
+    filtered_listing_ids_dict = {}
+    for listing in listings:
+        if stay_type_mask and not listing.stay_type & stay_type_mask:
+            continue
+        if amenities_mask and listing.amenities_mask & amenities_mask != amenities_mask:
+            continue
+        if facilities_mask and listing.facilities_mask & facilities_mask != facilities_mask:
+            continue
+        if prop_type_mask and not listing.prop_type & prop_type_mask:
+            continue
+        if uniq_type_mask and not listing.uniq_type & uniq_type_mask:
+            continue
+        filtered_listing_ids_dict[listing.id] = 1
+    return filtered_listing_ids_dict
+

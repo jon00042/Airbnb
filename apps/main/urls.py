@@ -11,6 +11,6 @@ urlpatterns = [
     path('logout', views.logout, name='logout'),
     path('login_ajax', views.login_ajax, name='login_ajax'),
     path('signup_ajax', views.signup_ajax, name='signup_ajax'),
-    path('filter_ajax', views.filter_ajax, name='filter_ajax'),
+    path('criteria_ajax', views.criteria_ajax, name='criteria_ajax'),
 ] + static('/media', document_root=settings.BASE_DIR + '/media')
 

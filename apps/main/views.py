@@ -1,10 +1,11 @@
+import apps.main.constants as const
 import apps.main.db_layer as db
 import apps.main.mock as mock
 import bcrypt
+import json
 
 from django.http import JsonResponse
 from django.shortcuts import redirect, render
-from pprint import pprint
 
 def get_logged_in_user(request):
     if 'user_id' not in request.session:
@@ -66,23 +67,19 @@ def index(request):
     mock.create_listings()
     context = {}
     context['listings'] = db.get_all_listings()
+    context['all_stay_types'] = const.STAY_TYPE
+    context['all_prop_types'] = const.PROP_TYPE
+    context['all_uniq_types'] = const.UNIQ_TYPE
+    context['all_amenities'] = const.AMENITIES
+    context['all_facilities'] = const.FACILITIES
     return render(request, 'main/index.html', context)
 
-def filter_ajax(request):
+def criteria_ajax(request):
     if request.method != 'POST':
         return JsonResponse({ 'url': redirect('main:index').url }, status=405)
+    filtered_listing_ids_dict = db.get_filtered_listing_ids_dict(request.POST)
     response_data = {}
-    from_date = request.POST.get('from_date')
-    to_date = request.POST.get('to_date')
-    if from_date and to_date:
-        bookable_listing_ids_qs = db.get_bookable_listings_ids(from_date, to_date)
-        dict_str = '{'
-        for listing_id in bookable_listing_ids_qs:
-            dict_str += ' "{}" : {}, '.format(listing_id, 1)
-        if len(dict_str) > 3:
-            dict_str = dict_str[:-2]
-        dict_str += ' }'
-        response_data['bookable_listing_ids_dict_str'] = dict_str;
+    response_data['filtered_listing_ids_dict_str'] = json.dumps(filtered_listing_ids_dict)
     return JsonResponse(response_data)
 
 def listing(request, id):

@@ -1,28 +1,70 @@
 {% extends 'main/base.html' %}
 
 {% block app %}
-<div id="dlg-cal"><div id="dpDlg"></div></div>
-<div id="dlg-attrs" style="display: none;"></div>
-
-<div id="filter-vals" style="display: none;">
-    <input type="hidden" id="filter_url" value="{% url 'main:filter_ajax' %}">
-    <input type="hidden" id="from_tmp">
-    <input type="hidden" id="to_tmp">
-    <input type="hidden" id="bookable_listing_ids_dict_str">
-    <input type="hidden" id="from_last">
-    <input type="hidden" id="to_last">
-    <input type="hidden" id="amenities_last">
-    <input type="hidden" id="facilities_last">
-    <input type="hidden" id="rules_last">
-    <input type="hidden" id="amenities_tmp">
-    <input type="hidden" id="facilities_tmp">
-    <input type="hidden" id="rules_tmp">
+<div id="criteria-bar">
+    <input type="hidden" id="criteria_url" value="{% url 'main:criteria_ajax' %}">
+    <button id="dates">Dates</button>
+    <button id="filters">Filters</button>
+    <div id="num" style="display: inline-block; padding-left: 10px;">{{listings|length}} listing(s)</div>
 </div>
 
-<div class="filter-bar">
-    <button id="dates">Dates</button>
-    <button id="attrs">Filters</button>
-    <div id="num" style="display: inline-block; padding-left: 10px;">{{listings|length}} listing(s)</div>
+<div id="dates-div-orig" style="display: none;">
+    <input type="hidden" id="from_date">
+    <input type="hidden" id="to_date">
+    <div style="height: calc(100vh - 80px - 64px - 78px); overflow: scroll;">DATE SELECTION</div>
+    <div style="height: 78px; border-top: 1px solid rgb(219, 219, 219);">CANCEL or APPLY or CLEAR</div>
+</div>
+
+<div id="filters-div" style="display: none; font-size: 19px;">
+    <div style="height: calc(100vh - 80px - 64px - 78px); overflow: scroll; padding: 0 20px; font-weight: 300;">
+        <div style="font-weight: 400; margin-bottom: 15px; margin-top: 20px;">Price range</div>
+        <div>TODO</div>
+        <div style="border-top: 1px solid rgb(219, 219, 219); font-weight: 400; margin-top: 15px; padding-top: 15px; margin-bottom: 15px;">Home type</div>
+        {% for item in all_stay_types %}
+            <div style="display: inline-block; width: 230px; white-space: nowrap;">
+                <input class="stay_type" style="zoom: 1.5;" type="checkbox" name="{{item}}">
+                {{item}}
+            </div>
+        {% endfor %}
+        <div style="border-top: 1px solid rgb(219, 219, 219); font-weight: 400; margin-top: 15px; padding-top: 15px; margin-bottom: 15px;">Rooms and beds</div>
+        <div>TODO</div>
+        <div style="border-top: 1px solid rgb(219, 219, 219); font-weight: 400; margin-top: 15px; padding-top: 15px; margin-bottom: 15px;">Amenities</div>
+        {% for item in all_amenities %}
+            <div style="display: inline-block; width: 230px; white-space: nowrap;">
+                <input class="amenities" style="zoom: 1.5;" type="checkbox" name="{{item}}">
+                {{item}}
+            </div>
+        {% endfor %}
+        <div style="border-top: 1px solid rgb(219, 219, 219); font-weight: 400; margin-top: 15px; padding-top: 15px; margin-bottom: 15px;">Facilities</div>
+        {% for item in all_facilities %}
+            <div style="display: inline-block; width: 230px; white-space: nowrap;">
+                <input class="facilities" style="zoom: 1.5;" type="checkbox" name="{{item}}">
+                {{item}}
+            </div>
+        {% endfor %}
+        <div style="border-top: 1px solid rgb(219, 219, 219); font-weight: 400; margin-top: 15px; padding-top: 15px; margin-bottom: 15px;">Property type</div>
+        {% for item in all_prop_types %}
+            <div style="display: inline-block; width: 230px; white-space: nowrap;">
+                <input class="prop_type" style="zoom: 1.5;" type="checkbox" name="{{item}}">
+                {{item}}
+            </div>
+        {% endfor %}
+        <div style="border-top: 1px solid rgb(219, 219, 219); font-weight: 400; margin-top: 15px; padding-top: 15px; margin-bottom: 15px;">Unique homes</div>
+        {% for item in all_uniq_types %}
+            <div style="display: inline-block; width: 230px; white-space: nowrap;">
+                <input class="uniq_type" style="zoom: 1.5;" type="checkbox" name="{{item}}">
+                {{item}}
+            </div>
+        {% endfor %}
+        <div style="border-top: 1px solid rgb(219, 219, 219); font-weight: 400; margin-top: 15px; padding-top: 15px; margin-bottom: 15px;">House rules</div>
+        <div>TODO</div>
+        <div style="height: 20px;"></div>
+    </div>
+    <div style="height: 78px; border-top: 1px solid rgb(219, 219, 219); text-align: center; float: center;">
+        <div style="display: inline-block; width: 28%; height: 50px; padding-top: 20px;"><a href="" id="reset" style="text-decoration: none; color: rgb(72, 72, 72);">Reset</a></div>
+        <div style="display: inline-block; width: 28%; height: 50px; padding-top: 20px;"><a href="" id="cancel" style="text-decoration: none; color: rgb(72, 72, 72);">Cancel</a></div>
+        <div style="display: inline-block; width: 28%; height: 50px; padding-top: 10px;"><button id="apply" style="outline: none; font-size: 19px; color: white; background-color: rgb(0, 132, 137); width: 100px; height: 40px; border-radius: 4px; cursor: pointer;">Apply</button></div>
+    </div>
 </div>
 
 <div id="listings-div" style="height: calc(100vh - 80px - 64px); overflow: scroll; padding-right: 30px;">
@@ -46,226 +88,307 @@
 {% block scripts %}
 <script>
     function yyyymmdd(dv) {
-        var y = dv.getFullYear();
-        var m = dv.getMonth() + 1;
-        var d = dv.getDate();
+        let y = dv.getFullYear();
+        let m = dv.getMonth() + 1;
+        let d = dv.getDate();
         return "" + y + "-" + (m < 10 ? "0" : "") + m + "-" + (d < 10 ? "0" : "") + d;
     }
 
-    function applyFilters() {
-        let from_last_str = $("#filter-vals").find("#from_last").val();
-        let to_last_str = $("#filter-vals").find("#to_last").val();
-        let dict_str = $("#filter-vals").find("#bookable_listing_ids_dict_str").val();
-        let bookable_listing_ids_dict = null;
-        if (dict_str) {
-            bookable_listing_ids_dict = JSON.parse(dict_str);
+    function showListableIds(ids_dict_str) {
+        let ids_dict = null;
+        if (ids_dict_str) {
+            ids_dict = JSON.parse(ids_dict_str);
         }
-
-        if (from_last_str && to_last_str) {
-            $("#dates").css("color", "white");
-            $("#dates").css("background-color", "rgb(0, 132, 137)");
-            $("#dates").text(from_last_str + " thru " + to_last_str);
-        } else {
-            $("#dates").css("color", "black");
-            $("#dates").css("background-color", "white");
-            $("#dates").text("Dates");
-        }
-
-        let amenities_last_str = $("#filter-vals").find("#amenities_last").val();
-        let facilities_last_str = $("#filter-vals").find("#facilities_last").val();
-        let rules_last_str = $("#filter-vals").find("#rules_last").val();
-
-        if (amenities_last_str || facilities_last_str || rules_last_str) {
-            $("#attrs").css("color", "white");
-            $("#attrs").css("background-color", "rgb(0, 132, 137)");
-        } else {
-            $("#attrs").css("color", "black");
-            $("#attrs").css("background-color", "white");
-        }
-
-        children = $("#listings-div").children();
         let showCount = 0;
-        if (children) {
-            for (let i = 0; i < children.length; ++i) {
-                selector = "#" + (i + 1);
-                showable = !bookable_listing_ids_dict || children[i].id in bookable_listing_ids_dict;
-                if (showable) {
-                    $("#listings-div").find(selector).show();
-                    ++showCount;
-                } else {
-                    $("#listings-div").find(selector).hide();
-                }
+        $("#listings-div").children().each(function() {
+            if (!ids_dict || !Object.keys(ids_dict).length || $(this).attr("id") in ids_dict) {
+                $(this).show();
+                ++showCount;
+            } else {
+                $(this).hide();
             }
-        }
-        $(".filter-bar").find("#num").text(showCount + " listing(s)");
+        });
+        $("#criteria-bar").find("#num").text(showCount + " listing(s)");
     }
 
-    $(document).ready(function() {
-        $("#dates").click(function() {
-            let from_last_input = $("#filter-vals").find("#from_last");
-            let to_last_input = $("#filter-vals").find("#to_last");
-            let dict_str_input = $("#filter-vals").find("#bookable_listing_ids_dict_str");
+    function getListableIds() {
+        let data = {};
+        let items = [ "stay_type", "amenities", "facilities", "prop_type", "uniq_type" ];
 
-            let from_tmp_input = $("#filter-vals").find("#from_tmp");
-            let to_tmp_input = $("#filter-vals").find("#to_tmp");
-
-            let minDateStr = null;
-            let cur_input = null;
-            let title = null;
-
-            if (!from_tmp_input.val()) {
-                minDateStr = yyyymmdd(new Date());
-                cur_input = from_tmp_input;
-                title = "*** FROM DATE ***"
-            } else {
-                minDateStr = from_tmp_input.val();
-                cur_input = to_tmp_input;
-                title = "*** TO DATE ***"
-            }
-
-            $("#dlg-cal").dialog({
-                autoOpen: false,
-                height: 300,
-                modal: true,
-                resizable: false,
-                title: title,
-                width: 275,
-                open: function() {
-                    let overlay = $(".ui-widget-overlay");
-                    overlay.css({ "opacity": "0.7", "background-color": "white" });
-                    overlay.click(function(event) {
-                        $("#dlg-cal").dialog("close");
-                    });
-                },
-                close: function() {
-                    $("#dlg-cal").find("#dpDlg").datepicker("destroy");
-
-                    if (!cur_input.val()) {
-                        from_tmp_input.val(null);
-                        to_tmp_input.val(null);
-                        return;
-                    }
-
-                    if (from_tmp_input.val() && !to_tmp_input.val())
-                    {
-                        setTimeout(function() { $("#dates").trigger("click"); }, 100);
-                        return;
-                    }
-
-                    from_last_input.val(from_tmp_input.val());
-                    to_last_input.val(to_tmp_input.val());
-
-                    from_tmp_input.val(null);
-                    to_tmp_input.val(null);
-
-                    if (from_last_input.val() && to_last_input.val()) {
-                        $.ajax({
-                            beforeSend: setCsrfToken,
-                            type: "POST",
-                            url: $("#filter-vals").find("#filter_url").val(),
-                            data: {
-                                from_date: from_last_input.val(),
-                                to_date: to_last_input.val(),
-                            },
-                            success: function(response) {
-                                let dict_str = null;
-                                if (response) {
-                                    dict_str = response.bookable_listing_ids_dict_str;
-                                }
-                                dict_str_input.val(dict_str);
-                                applyFilters();
-                            },
-                        });
-                    } else {
-                        dict_str_input.val(null);
-                        setTimeout(function() { applyFilters(); }, 100);
-                    }
-                },
-                buttons: {
-                    "Clear Dates": function() {
-                        from_tmp_input.val(null);
-                        to_tmp_input.val(null);
-                        from_last_input.val(null);
-                        to_last_input.val(null);
-                        dict_str_input.val(null);
-                        $("#dlg-cal").dialog("close");
-                        setTimeout(function() { applyFilters(); }, 100);
-                    },
-                },
-            });
-
-            $("#dlg-cal").find("#dpDlg").datepicker({
-                dateFormat: "yy-mm-dd",
-                minDate: minDateStr,
-                onSelect: function() {
-                    let dv = $("#dlg-cal").find("#dpDlg").datepicker("getDate");
-                    cur_input.val(yyyymmdd(dv));
-                    $("#dlg-cal").dialog("close");
+        for (let i = 0; i < items.length; ++i) {
+            let selector = "." + items[i];
+            let vals = [];
+            $(selector).each(function() {
+                if ($(this).prop("checked"))
+                {
+                    vals.push($(this).attr("name"));
                 }
             });
 
-            $("#dlg-cal").dialog("open");
+            if (vals.length > 0) {
+                data[items[i]] = JSON.stringify(vals);
+            }
+        }
+
+        $.ajax({
+            beforeSend: setCsrfToken,
+            type: "POST",
+            url: $("#criteria-bar").find("#criteria_url").val(),
+            data: data,
+            success: function(response) {
+                let filtered_listing_ids_dict_str = null;
+                if (response) {
+                    filtered_listing_ids_dict_str = response.filtered_listing_ids_dict_str;
+                }
+                showListableIds(filtered_listing_ids_dict_str);
+            },
+            error: function(response) {
+                showListableIds(null);
+            }
+        });
+    }
+
+    // function applyFilters() {
+    //     let from_last_str = $("#criteria-vals").find("#from_last").val();
+    //     let to_last_str = $("#criteria-vals").find("#to_last").val();
+    //     let dict_str = $("#criteria-vals").find("#bookable_listing_ids_dict_str").val();
+    //     let bookable_listing_ids_dict = null;
+    //     if (dict_str) {
+    //         bookable_listing_ids_dict = JSON.parse(dict_str);
+    //     }
+
+    //     if (from_last_str && to_last_str) {
+    //         $("#criteria-bar").find("#dates").css("color", "white");
+    //         $("#criteria-bar").find("#dates").css("background-color", "rgb(0, 132, 137)");
+    //         $("#criteria-bar").find("#dates").text(from_last_str + " thru " + to_last_str);
+    //     } else {
+    //         $("#criteria-bar").find("#dates").css("color", "black");
+    //         $("#criteria-bar").find("#dates").css("background-color", "white");
+    //         $("#criteria-bar").find("#dates").text("Dates");
+    //     }
+
+    //     let amenities_last_str = $("#criteria-vals").find("#amenities_last").val();
+    //     let facilities_last_str = $("#criteria-vals").find("#facilities_last").val();
+    //     let rules_last_str = $("#criteria-vals").find("#rules_last").val();
+
+    //     if (amenities_last_str || facilities_last_str || rules_last_str) {
+    //         $("#filters").css("color", "white");
+    //         $("#filters").css("background-color", "rgb(0, 132, 137)");
+    //     } else {
+    //         $("#filters").css("color", "black");
+    //         $("#filters").css("background-color", "white");
+    //     }
+
+    // }
+
+    $(document).ready(function() {
+        // $("#criteria-bar").find("#dates").click(function(event) {
+        //     let from_last_input = $("#criteria-vals").find("#from_last");
+        //     let to_last_input = $("#criteria-vals").find("#to_last");
+        //     let dict_str_input = $("#criteria-vals").find("#bookable_listing_ids_dict_str");
+
+        //     let from_tmp_input = $("#criteria-vals").find("#from_tmp");
+        //     let to_tmp_input = $("#criteria-vals").find("#to_tmp");
+
+        //     let minDateStr = null;
+        //     let cur_input = null;
+        //     let title = null;
+
+        //     if (!from_tmp_input.val()) {
+        //         minDateStr = yyyymmdd(new Date());
+        //         cur_input = from_tmp_input;
+        //         title = "*** FROM DATE ***"
+        //     } else {
+        //         minDateStr = from_tmp_input.val();
+        //         cur_input = to_tmp_input;
+        //         title = "*** TO DATE ***"
+        //     }
+
+        //     $("#dlg-cal").dialog({
+        //         autoOpen: false,
+        //         height: 300,
+        //         modal: true,
+        //         resizable: false,
+        //         title: title,
+        //         width: 275,
+        //         open: function() {
+        //             let overlay = $(".ui-widget-overlay");
+        //             overlay.css({ "opacity": "0.7", "background-color": "white" });
+        //             overlay.click(function(event) {
+        //                 $("#dlg-cal").dialog("close");
+        //             });
+        //         },
+        //         close: function() {
+        //             $("#dlg-cal").find("#dpDlg").datepicker("destroy");
+
+        //             if (!cur_input.val()) {
+        //                 from_tmp_input.val(null);
+        //                 to_tmp_input.val(null);
+        //                 return;
+        //             }
+
+        //             if (from_tmp_input.val() && !to_tmp_input.val())
+        //             {
+        //                 setTimeout(function() { $("#criteria-bar").find("#dates").trigger("click"); }, 100);
+        //                 return;
+        //             }
+
+        //             from_last_input.val(from_tmp_input.val());
+        //             to_last_input.val(to_tmp_input.val());
+
+        //             from_tmp_input.val(null);
+        //             to_tmp_input.val(null);
+
+        //             if (from_last_input.val() && to_last_input.val()) {
+        //                 $.ajax({
+        //                     beforeSend: setCsrfToken,
+        //                     type: "POST",
+        //                     url: $("#criteria-vals").find("#criteria_url").val(),
+        //                     data: {
+        //                         from_date: from_last_input.val(),
+        //                         to_date: to_last_input.val(),
+        //                     },
+        //                     success: function(response) {
+        //                         let dict_str = null;
+        //                         if (response) {
+        //                             dict_str = response.bookable_listing_ids_dict_str;
+        //                         }
+        //                         dict_str_input.val(dict_str);
+        //                         applyFilters();
+        //                     },
+        //                 });
+        //             } else {
+        //                 dict_str_input.val(null);
+        //                 setTimeout(function() { applyFilters(); }, 100);
+        //             }
+        //         },
+        //         buttons: {
+        //             "Clear Dates": function() {
+        //                 from_tmp_input.val(null);
+        //                 to_tmp_input.val(null);
+        //                 from_last_input.val(null);
+        //                 to_last_input.val(null);
+        //                 dict_str_input.val(null);
+        //                 $("#dlg-cal").dialog("close");
+        //                 setTimeout(function() { applyFilters(); }, 100);
+        //             },
+        //         },
+        //     });
+
+        //     $("#dlg-cal").find("#dpDlg").datepicker({
+        //         dateFormat: "yy-mm-dd",
+        //         minDate: minDateStr,
+        //         onSelect: function() {
+        //             let dv = $("#dlg-cal").find("#dpDlg").datepicker("getDate");
+        //             cur_input.val(yyyymmdd(dv));
+        //             $("#dlg-cal").dialog("close");
+        //         }
+        //     });
+
+        //     $("#dlg-cal").dialog("open");
+        // });
+        $("#criteria-bar").find("#dates").click(function(event) {
+            if ($("#dates-div-clone").length || $("#filters-div-clone").length) {
+                return;
+            }
         });
 
-        $("#attrs").click(function() {
-            let amenities_last_input = $("#filter-vals").find("#amenities_last");
-            let facilities_last_input = $("#filter-vals").find("#facilities_last");
-            let rules_last_input = $("#filter-vals").find("#rules_last");
+        $("#criteria-bar").find("#filters").click(function(event) {
+            if ($("#dates-div-clone").length || $("#filters-div-clone").length) {
+                return;
+            }
 
-            let amenities_tmp_input = $("#filter-vals").find("#amenities_tmp");
-            let facilities_tmp_input = $("#filter-vals").find("#facilities_tmp");
-            let rules_tmp_input = $("#filter-vals").find("#rules_tmp");
+            let orig = $("#filters-div");
+            let clone = orig.clone().attr("id", "filters-div-clone");
+            clone.insertAfter(orig);
 
-            let height = 300;
-            let width = 300;
-
-            $("#dlg-attrs").dialog({
-                autoOpen: false,
-                height: height,
-                modal: true,
-                resizable: false,
-                width: width,
-                open: function() {
-                    let overlay = $(".ui-widget-overlay");
-                    overlay.css({ "opacity": "0.7", "background-color": "white" });
-                    overlay.click(function(event) {
-                        $("#dlg-attrs").dialog("close");
-                    });
-                },
-                close: function() {
-                    amenities_last_input.val(amenities_tmp_input.val());
-                    facilities_last_input.val(facilities_tmp_input.val());
-                    rules_last_input.val(rules_tmp_input.val());
-
-                    amenities_tmp_input.val(null);
-                    facilities_tmp_input.val(null);
-                    rules_tmp_input.val(null);
-
-                    if (amenities_last_input.val() || facilities_last_input.val() || rules_last_input.val()) {
-                        $.ajax({
-                            beforeSend: setCsrfToken,
-                            type: "POST",
-                            url: $("#filter-vals").find("#filter_url").val(),
-                            data: {
-                                amenities: amenities_last_input.val(),
-                                facilities: facilities_last_input.val(),
-                                rules: rules_last_input.val(),
-                            },
-                            success: function(response) {
-                                if (response) {
-                                    // $("#filter-vals").find("#x").val(response.x);
-                                }
-                                applyFilters();
-                            },
-                        });
-                    } else {
-                        setTimeout(function() { applyFilters(); }, 100);
-                    }
-                },
+            clone.find("#cancel").click(function(event) {
+                event.preventDefault();
+                clone.remove();
+                $("#listings-div").show();
             });
 
-            $("#dlg-attrs").dialog("open");
+            clone.find("#reset").click(function(event) {
+                event.preventDefault();
+                clone.remove();
+                orig.find(":checkbox").prop("checked", false);
+                $("#listings-div").show();
+                setTimeout(function() { getListableIds(); }, 100);
+            });
+
+            clone.find("#apply").click(function(event) {
+                event.preventDefault();
+                orig.remove();
+                clone.attr("id", "filters-div");
+                clone.hide();
+                $("#listings-div").show();
+                setTimeout(function() { getListableIds(); }, 100);
+            });
+
+            $("#listings-div").hide();
+            clone.show();
         });
+
+        // $("#filters").click(function() {
+        //     let amenities_last_input = $("#criteria-vals").find("#amenities_last");
+        //     let facilities_last_input = $("#criteria-vals").find("#facilities_last");
+        //     let rules_last_input = $("#criteria-vals").find("#rules_last");
+
+        //     let amenities_tmp_input = $("#criteria-vals").find("#amenities_tmp");
+        //     let facilities_tmp_input = $("#criteria-vals").find("#facilities_tmp");
+        //     let rules_tmp_input = $("#criteria-vals").find("#rules_tmp");
+
+        //     let height = 500;
+        //     let width = 500;
+
+        //     $("#dlg-filters").dialog({
+        //         autoOpen: false,
+        //         dialogClass: "no-close no-title",
+        //         height: height,
+        //         modal: true,
+        //         resizable: false,
+        //         width: width,
+        //         // open: function() {
+        //         //     let overlay = $(".ui-widget-overlay");
+        //         //     overlay.css({ "opacity": "0.7", "background-color": "white" });
+        //         //     overlay.click(function(event) {
+        //         //         $("#dlg-filters").dialog("close");
+        //         //     });
+        //         // },
+        //         close: function() {
+        //             amenities_last_input.val(amenities_tmp_input.val());
+        //             facilities_last_input.val(facilities_tmp_input.val());
+        //             rules_last_input.val(rules_tmp_input.val());
+
+        //             amenities_tmp_input.val(null);
+        //             facilities_tmp_input.val(null);
+        //             rules_tmp_input.val(null);
+
+        //             if (amenities_last_input.val() || facilities_last_input.val() || rules_last_input.val()) {
+        //                 $.ajax({
+        //                     beforeSend: setCsrfToken,
+        //                     type: "POST",
+        //                     url: $("#criteria-vals").find("#criteria_url").val(),
+        //                     data: {
+        //                         amenities: amenities_last_input.val(),
+        //                         facilities: facilities_last_input.val(),
+        //                         rules: rules_last_input.val(),
+        //                     },
+        //                     success: function(response) {
+        //                         if (response) {
+        //                             // $("#criteria-vals").find("#x").val(response.x);
+        //                         }
+        //                         applyFilters();
+        //                     },
+        //                 });
+        //             } else {
+        //                 setTimeout(function() { applyFilters(); }, 100);
+        //             }
+        //         },
+        //     });
+
+        //     $("#dlg-filters").dialog("open");
+        // });
     });
 </script>
 {% endblock %}

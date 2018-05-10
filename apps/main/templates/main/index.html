@@ -78,11 +78,13 @@
     <div class="listing" id="{{listing.id}}">
         <a href="{% url 'main:listing' id=listing.id %}" target="_blank"><img src="/media/listings/{{listing.id}}/main.jpg"></a>
         <a href="{% url 'main:listing' id=listing.id %}" target="_blank">
-            {% if listing.uniq_type %}
-            <div style="color: rgb(165, 41, 3); font-size: 12px; font-weight: bold; padding-top: 5px;">{{listing.stay_type_str}} in {{listing.uniq_type_str}}</div>
-            {% else %}
-            <div style="color: rgb(165, 41, 3); font-size: 12px; font-weight: bold; padding-top: 5px;">{{listing.stay_type_str}}</div>
-            {% endif %}
+            <div style="color: rgb(165, 41, 3); font-size: 12px; font-weight: bold; padding-top: 5px;">
+                {% if listing.uniq_type %}
+                    {{listing.stay_type_str}} in {{listing.uniq_type_str}}
+                {% else %}
+                    {{listing.stay_type_str}}
+                {% endif %}
+            </div>
             <div style="color: rgb(72, 72, 72); font-size: 19px; font-weight: bold;">{{listing.name}}</div>
             <div style="color: rgb(72, 72, 72); font-size: 15px; font-weight: 300;">From {{listing.price_per_night_str}} per night</div>
         </a>

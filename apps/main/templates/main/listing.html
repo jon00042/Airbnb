@@ -5,11 +5,13 @@
 <div style="overflow: scroll; height: calc(100vh - 80px - 70px); border: 1px solid white;">
     <div style="width: 100%; height: 100%; max-height: 440px; background-size: cover; background-repeat: no-repeat; background-position: center center; background-image: url('/media/listings/{{listing.id}}/main.jpg')"></div>
     <div style="font-size: 17px; padding-left: 20%; padding-right: 20%; padding-top: 20px;">
-        {% if listing.uniq_type %}
-        <div style="font-size: 14px;">{{listing.stay_type_str}} in {{listing.uniq_type_str}}</div>
-        {% else %}
-        <div style="font-size: 14px;">{{listing.stay_type_str}}</div>
-        {% endif %}
+        <div style="color: rgb(165, 41, 3); font-weight: bold; font-size: 14px;">
+            {% if listing.uniq_type %}
+                {{listing.stay_type_str}} in {{listing.uniq_type_str}}
+            {% else %}
+                {{listing.stay_type_str}}
+            {% endif %}
+        </div>
         <h1 style="margin-top: 5px; margin-bottom: 10px;">{{listing.name}}</h1>
         <div>
             <div style="display: inline-block; margin-right: 20px;">{{listing.beds_str}}</div>
@@ -19,21 +21,25 @@
         <div style="margin-top: 15px;">{{listing.desc}}</div>
         <div style="margin-top: 15px; padding-top: 15px; border-top: 1px solid lightgrey;">
             <div style="font-weight: bold; margin-bottom: 10px;">Amenities</div>
-            {% for amenity in listing.amenities_list %}
-            <div style="display: inline-block; margin-right: 25px;">{{amenity}}</div>
+            {% for item in listing.amenities_list %}
+                <div style="display: inline-block; margin-right: 25px; width: 200px; white-space: nowrap;">{{item}}</div>
             {% endfor %}
         </div>
         <div style="margin-top: 15px; padding-top: 15px; border-top: 1px solid lightgrey;">
-            <div style="font-weight: bold; margin-bottom: 10px;">Facilities</div>
-            {% for facility in listing.facilities_list %}
-            <div style="display: inline-block; margin-right: 25px;">{{facility}}</div>
+            <div style="font-weight: bold; margin-bottom: 10px; width: 200px; white-space: nowrap;">Facilities</div>
+            {% for item in listing.facilities_list %}
+                <div style="display: inline-block; margin-right: 25px;">{{item}}</div>
             {% endfor %}
         </div>
         <div style="margin-top: 15px; padding-top: 15px; border-top: 1px solid lightgrey;">
-            <div style="font-weight: bold; margin-bottom: 10px;">House Rules</div>
-            {% for rule in listing.rules_list %}
-            <div style="display: inline-block; margin-right: 25px;">{{rule}}</div>
+            <div style="font-weight: bold; margin-bottom: 10px; width: 200px; white-space: nowrap;">House Rules</div>
+            {% for item in listing.rules_list %}
+                <div style="display: inline-block; margin-right: 25px;">{{item}}</div>
             {% endfor %}
+        </div>
+        <div style="margin-top: 15px; padding-top: 15px; border-top: 1px solid lightgrey;">
+            <div style="font-weight: bold; margin-bottom: 10px;">Approximate Location</div>
+            <div id="map" style="height: 300px;"></div>
         </div>
         <div style="margin-top: 15px; padding-top: 15px; border-top: 1px solid lightgrey;"></div>
     </div>
@@ -44,10 +50,31 @@
 
 {% block scripts %}
 <script>
+
+    function gmapReady() {
+        let map = new google.maps.Map(document.getElementById('map'), {
+            center: { lat: 34.062754, lng: -118.354004 },
+            zoom: 11,
+        });
+
+        let circle = new google.maps.Circle({
+            map: map,
+            center: map.center,
+            radius: 4000,
+            strokeColor: '#FF0000',
+            strokeOpacity: 0.5,
+            strokeWeight: 1,
+            fillColor: '#FF0000',
+            fillOpacity: 0.35,
+        });
+    }
+
     $(document).ready(function() {
         $(".filter-bar").hide();
-        $("body").show();
     });
 </script>
+
+<script async defer src="https://maps.googleapis.com/maps/api/js?key={{gmap_api_key}}&libraries=places&callback=gmapReady"></script>
+
 {% endblock %}
 

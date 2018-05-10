@@ -1,5 +1,6 @@
 import apps.main.constants as const
 import apps.main.db_layer as db
+import apps.main.keys as keys
 import apps.main.mock as mock
 import bcrypt
 import json
@@ -85,5 +86,6 @@ def criteria_ajax(request):
 def listing(request, id):
     context = {}
     db.get_listing(id, context)
+    context['gmap_api_key'] = keys.GMAP_API_KEY
     return render(request, 'main/listing.html', context)
 

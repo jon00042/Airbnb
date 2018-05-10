@@ -75,6 +75,8 @@ def create_listing(addr_idx):
         'rules_mask': random.choice(range(1 << 3)),
         'host_user_id': random.choice([1, 2, 3, 4, 5]),
     }
+    if random.choice(range(10)) == 5:
+        params_dict['uniq_type'] = None
     listing, error = db.create_listing(params_dict)
     if listing:
         from_dt = '2018-{}-{}'.format(random.choice(range(1, 7)), random.choice(range(1, 28)))

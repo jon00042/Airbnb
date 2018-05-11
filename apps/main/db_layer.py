@@ -126,15 +126,15 @@ def get_filtered_listing_ids_dict(criteria_dict):
     uniq_type_mask = const.list_to_mask(const.UNIQ_TYPE, criteria_dict.get('uniq_type'))
     filtered_listing_ids_dict = {}
     for listing in listings:
-        if stay_type_mask and not listing.stay_type & stay_type_mask:
+        if stay_type_mask and listing.stay_type & stay_type_mask != listing.stay_type:
             continue
-        if amenities_mask and listing.amenities_mask & amenities_mask != amenities_mask:
+        if amenities_mask and listing.amenities_mask & amenities_mask == 0:
             continue
-        if facilities_mask and listing.facilities_mask & facilities_mask != facilities_mask:
+        if facilities_mask and listing.facilities_mask & facilities_mask == 0:
             continue
-        if prop_type_mask and not listing.prop_type & prop_type_mask:
+        if prop_type_mask and listing.prop_type & prop_type_mask != listing.prop_type:
             continue
-        if uniq_type_mask and not listing.uniq_type & uniq_type_mask:
+        if uniq_type_mask and (not listing.uniq_type or listing.uniq_type & uniq_type_mask != listing.uniq_type):
             continue
         filtered_listing_ids_dict[listing.id] = 1
     return filtered_listing_ids_dict

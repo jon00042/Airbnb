@@ -105,35 +105,26 @@ body {
     width: 100%;
 }
 
-.nav-menu > ul {
+.nav-menu > div {
     display: table;
     float: right;
     height: 100%;
-    margin-bottom: 0;
-    margin-top: 0;
-    padding-left: 0;
 }
 
-.nav-menu > ul > li {
-    display: table-cell;
-    margin-bottom: 2px;
-}
-
-.nav-menu > ul > li:hover {
-    border-bottom: 2px solid rgb(118,118,118);
-}
-
-.nav-menu > ul > li > button {
-    background: white;
-    border: 0;
+.nav-menu > div > button {
+    background-color: transparent;
+    font-size: 14px;
+    height: 79px;
+    border-color: transparent;
+    margin-right: 15px;
+    outline: none;
     color: rgb(72, 72, 72);
     font-family: Helvetica, Arial, sans-serif;
-    font-size: 14px;
-    height: 95%;
-    margin-right: 15px;
-    margin-left: 15px;
-    outline: none;
     white-space: nowrap;
+}
+
+.nav-menu > div > button:hover {
+    border-bottom: 2px solid rgb(118,118,118);
 }
 
 #criteria-bar {
@@ -171,7 +162,7 @@ body {
     .nav-search-lg {
         display: none;
     }
-    .nav-menu > ul {
+    .nav-menu > div {
         display: none;
     }
 }
@@ -188,7 +179,7 @@ body {
     .nav-search-lg {
         display: table-cell;
     }
-    .nav-menu > ul {
+    .nav-menu > div {
         display: none;
     }
 }
@@ -205,7 +196,7 @@ body {
     .nav-search-lg {
         display: table-cell;
     }
-    .nav-menu > ul {
+    .nav-menu > div {
         display: table;
     }
 }

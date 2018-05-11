@@ -34,23 +34,23 @@
             </div>
         </div>
         <div class="nav-menu">
-            <ul>
+            <div>
                 {% if request.session.user_id %}
-                    <li><button>Become a host</li>
-                    <li><button>Saved</button></li>
-                    <li><button>Trips</button></li>
-                    <li><button>Messages</button></li>
-                    <li><button>Credit</button></li>
-                    <li><button>Help</button></li>
-                    <li><button>PF</button></li>
+                    <button>Become a host</button>
+                    <button>Saved</button>
+                    <button>Trips</button>
+                    <button>Messages</button>
+                    <button>Credit</button>
+                    <button>Help</button>
+                    <button url="{% url 'main:logout' %}" id="btn-logout">Logout</button>
                 {% else %}
-                    <li><button>Become a host</li>
-                    <li><button>Earn credit</button></li>
-                    <li><button>Help</button></li>
-                    <li><button id="btn-signup">Sign Up</button></li>
-                    <li><button id="btn-login">Log In</button></li>
+                    <button>Become a host</button>
+                    <button>Earn credit</button>
+                    <button>Help</button>
+                    <button id="btn-signup">Sign Up</button>
+                    <button id="btn-login">Log In</button>
                 {% endif %}
-            </ul>
+            </div>
         </div>
     </div>
 
@@ -218,6 +218,12 @@
         }
 
         $(document).ready(function() {
+            $("#btn-logout").click(function(event) {
+                event.preventDefault();
+                window.location = $("#btn-logout").attr("url");
+                return;
+            });
+
             let loginCfg = makeDlgCfg($("#dlg-login"), 568, 520);
             let signupCfg = makeDlgCfg($("#dlg-signup"), 568, 580);
 

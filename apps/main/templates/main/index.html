@@ -11,11 +11,11 @@
 <div id="dates-div" style="display: none;">
     <div style="height: calc(100vh - 80px - 64px - 78px); overflow: scroll; text-align: center">
         <div style="display: inline-block; margin-top: 20px; margin-right: 10%;">
-            <div class="white-on-green" style="margin-bottom: 20px; font-weight: bold;">FROM</div>
+            <div class="white-on-green" style="font-size: 20px; height: 30px; padding-top: 10px; margin-bottom: 5px; font-weight: bold;">FROM</div>
             <div style="font-size: 15px;" id="dp_from"></div>
         </div>
         <div style="display: inline-block; margin-top: 20px; margin-right: 10%;">
-            <div class="white-on-green" style="margin-bottom: 20px; font-weight: bold;">TO</div>
+            <div class="white-on-green" style="font-size: 20px; height: 30px; padding-top: 10px; margin-bottom: 5px; font-weight: bold;">TO</div>
             <div style="font-size: 15px;" id="dp_to"></div>
         </div>
     </div>
@@ -244,19 +244,24 @@
                 orig.attr("to_date", null);
                 $("#criteria-bar").find("#dates").removeClass();
                 $("#criteria-bar").find("#dates").addClass("black-on-white");
+                $("#criteria-bar").find("#dates").text("Dates");
                 $("#listings-div").show();
                 setTimeout(function() { getListableIds(); }, 100);
             });
 
             clone.find("#apply").click(function(event) {
                 event.preventDefault();
-                orig.attr("from_date", yyyymmdd(fromDp.datepicker("getDate")));
-                orig.attr("to_date", yyyymmdd(toDp.datepicker("getDate")));
+                fromDate = fromDp.datepicker("getDate");
+                toDate = toDp.datepicker("getDate");
+                orig.attr("from_date", yyyymmdd(fromDate));
+                orig.attr("to_date", yyyymmdd(toDate));
                 fromDp.datepicker("destroy");
                 toDp.datepicker("destroy");
                 clone.remove();
+                let datesStr = "" + (fromDate.getMonth() + 1) + "/" + (fromDate.getDate()) + " - " + (toDate.getMonth() + 1) + "/" + (toDate.getDate());
                 $("#criteria-bar").find("#dates").removeClass();
                 $("#criteria-bar").find("#dates").addClass("white-on-green");
+                $("#criteria-bar").find("#dates").text(datesStr);
                 $("#listings-div").show();
                 setTimeout(function() { getListableIds(); }, 100);
             });
@@ -297,6 +302,7 @@
                 orig.find(":checkbox").prop("checked", false);
                 $("#criteria-bar").find("#filters").removeClass();
                 $("#criteria-bar").find("#filters").addClass("black-on-white");
+                $("#criteria-bar").find("#filters").text("Filters");
                 $("#listings-div").show();
                 setTimeout(function() { getListableIds(); }, 100);
             });
@@ -315,6 +321,7 @@
                 $("#criteria-bar").find("#filters").removeClass();
                 if (checkedCount > 0) {
                     $("#criteria-bar").find("#filters").addClass("white-on-green");
+                    $("#criteria-bar").find("#filters").text("Filters (" + checkedCount + ")");
                 } else {
                     $("#criteria-bar").find("#filters").addClass("black-on-white");
                 }

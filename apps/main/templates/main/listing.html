@@ -77,13 +77,13 @@
     }
 
     function adjustSizes() {
-        console.log("window: " + $(window).height());
-        console.log("nav-bar: " + $(".nav-bar").height());
-        console.log("footer-div: " + $("#footer-div").height());
+        // console.log("window: " + $(window).height());
+        // console.log("nav-bar: " + $(".nav-bar").height());
+        // console.log("footer-div: " + $("#footer-div").height());
         let height = $(window).height() - $(".nav-bar").height() - $("#footer-div").height();
-        console.log("listings-div orig: " + $("#listings-div").height());
+        // console.log("listings-div orig: " + $("#listings-div").height());
         $("#listings-div").height(height);
-        console.log("listings-div orig: " + $("#listings-div").height());
+        // console.log("listings-div orig: " + $("#listings-div").height());
     }
 
     $(document).ready(function() {

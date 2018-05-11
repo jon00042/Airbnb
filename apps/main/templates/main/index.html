@@ -21,7 +21,7 @@
         </div>
         </div>
     </div>
-    <div id="footer" class="common-border-top" style="font-size: 19px; height: 78px; text-align: center; float: center;">
+    <div id="footer" class="common-border-top" style="font-size: 19px; height: 70px; text-align: center; float: center;">
         <div style="display: inline-block; width: 28%; height: 50px; padding-top: 20px;"><a id="reset" class="burgundy-on-white" style="text-decoration: none; cursor: pointer;">All Dates</a></div>
         <div style="display: inline-block; width: 28%; height: 50px; padding-top: 20px;"><a id="cancel" class="black-on-white" style="text-decoration: none; cursor: pointer;">Cancel</a></div>
         <div style="display: inline-block; width: 28%; height: 50px; padding-top: 10px;"><button id="apply" class="white-on-green" style="outline: none; font-size: 19px; width: 100px; height: 40px; border-radius: 4px; cursor: pointer;">Apply</button></div>
@@ -68,7 +68,7 @@
         <div>TODO</div>
         <div style="height: 20px;"></div>
     </div>
-    <div id="footer" class="common-border-top" style="height: 78px; text-align: center; float: center;">
+    <div id="footer" class="common-border-top" style="height: 70px; text-align: center; float: center;">
         <div style="display: inline-block; width: 28%; height: 50px; padding-top: 20px;"><a id="reset" class="burgundy-on-white" style="text-decoration: none; cursor: pointer;">No Filters</a></div>
         <div style="display: inline-block; width: 28%; height: 50px; padding-top: 20px;"><a id="cancel" class="black-on-white" style="text-decoration: none; cursor: pointer;">Cancel</a></div>
         <div style="display: inline-block; width: 28%; height: 50px; padding-top: 10px;"><button id="apply" class="white-on-green" style="outline: none; font-size: 19px; width: 100px; height: 40px; border-radius: 4px; cursor: pointer;">Apply</button></div>
@@ -166,14 +166,14 @@
 
     function adjustSizes(selector) {
         if (selector.length) {
-            console.log("window: " + $(window).height());
-            console.log("nav-bar: " + $(".nav-bar").height());
-            console.log("criteria-bar: " + $("#criteria-bar").height());
-            console.log("footer: " + selector.find("#footer").height());
+            // console.log("window: " + $(window).height());
+            // console.log("nav-bar: " + $(".nav-bar").height());
+            // console.log("criteria-bar: " + $("#criteria-bar").height());
+            // console.log("footer: " + selector.find("#footer").height());
             let height = $(window).height() - $(".nav-bar").height() - $("#criteria-bar").height() - selector.find("#footer").height();
-            console.log("view orig: " + selector.find("#view").height());
+            // console.log("view orig: " + selector.find("#view").height());
             selector.find("#view").height(height);
-            console.log("view new: " + selector.find("#view").height());
+            // console.log("view new: " + selector.find("#view").height());
         }
     }
 

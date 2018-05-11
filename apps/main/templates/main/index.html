@@ -3,8 +3,8 @@
 {% block app %}
 <div id="criteria-bar">
     <input type="hidden" id="criteria_url" value="{% url 'main:criteria_ajax' %}">
-    <button id="dates">Dates</button>
-    <button id="filters">Filters</button>
+    <button id="dates" class="black-on-white">Dates</button>
+    <button id="filters" class="black-on-white">Filters</button>
     <div id="num" style="display: inline-block; padding-left: 10px;">{{listings|length}} listing(s)</div>
 </div>
 
@@ -184,6 +184,10 @@
                 return;
             }
 
+            origClass = $("#criteria-bar").find("#dates").attr("class");
+            $("#criteria-bar").find("#dates").removeClass();
+            $("#criteria-bar").find("#dates").addClass("white-on-green-light");
+
             let orig = $("#dates-div");
             let clone = orig.clone().attr("id", "dates-div-clone");
             fromDp = clone.find("#dp_from").attr("id", "dp_from_clone");
@@ -226,6 +230,8 @@
                 fromDp.datepicker("destroy");
                 toDp.datepicker("destroy");
                 clone.remove();
+                $("#criteria-bar").find("#dates").removeClass();
+                $("#criteria-bar").find("#dates").addClass(origClass);
                 $("#listings-div").show();
             });
 
@@ -236,6 +242,8 @@
                 clone.remove();
                 orig.attr("from_date", null);
                 orig.attr("to_date", null);
+                $("#criteria-bar").find("#dates").removeClass();
+                $("#criteria-bar").find("#dates").addClass("black-on-white");
                 $("#listings-div").show();
                 setTimeout(function() { getListableIds(); }, 100);
             });
@@ -247,6 +255,8 @@
                 fromDp.datepicker("destroy");
                 toDp.datepicker("destroy");
                 clone.remove();
+                $("#criteria-bar").find("#dates").removeClass();
+                $("#criteria-bar").find("#dates").addClass("white-on-green");
                 $("#listings-div").show();
                 setTimeout(function() { getListableIds(); }, 100);
             });
@@ -265,6 +275,10 @@
                 return;
             }
 
+            origClass = $("#criteria-bar").find("#filters").attr("class");
+            $("#criteria-bar").find("#filters").removeClass();
+            $("#criteria-bar").find("#filters").addClass("white-on-green-light");
+
             let orig = $("#filters-div");
             let clone = orig.clone().attr("id", "filters-div-clone");
             clone.insertAfter(orig);
@@ -272,6 +286,8 @@
             clone.find("#cancel").click(function(event) {
                 event.preventDefault();
                 clone.remove();
+                $("#criteria-bar").find("#filters").removeClass();
+                $("#criteria-bar").find("#filters").addClass(origClass);
                 $("#listings-div").show();
             });
 
@@ -279,15 +295,29 @@
                 event.preventDefault();
                 clone.remove();
                 orig.find(":checkbox").prop("checked", false);
+                $("#criteria-bar").find("#filters").removeClass();
+                $("#criteria-bar").find("#filters").addClass("black-on-white");
                 $("#listings-div").show();
                 setTimeout(function() { getListableIds(); }, 100);
             });
 
             clone.find("#apply").click(function(event) {
                 event.preventDefault();
+                let checkedCount = 0;
+                clone.find(":checkbox").each(function() {
+                    if ($(this).prop("checked")) {
+                        checkedCount += 1;
+                    }
+                });
                 clone.attr("id", "filters-div");
                 clone.hide();
                 orig.remove();
+                $("#criteria-bar").find("#filters").removeClass();
+                if (checkedCount > 0) {
+                    $("#criteria-bar").find("#filters").addClass("white-on-green");
+                } else {
+                    $("#criteria-bar").find("#filters").addClass("black-on-white");
+                }
                 $("#listings-div").show();
                 setTimeout(function() { getListableIds(); }, 100);
             });

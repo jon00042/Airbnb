@@ -75,7 +75,7 @@
     </div>
 </div>
 
-<div id="listings-div" style="padding-right: 30px;">
+<div id="listings-div" style="height: calc(100vh - 80px - 64px); overflow: scroll; padding-right: 30px;">
     {% for listing in listings %}
     <div class="listing" id="{{listing.id}}">
         <a href="{% url 'main:listing' id=listing.id %}" target="_blank"><img src="/media/listings/{{listing.id}}/main.jpg"></a>

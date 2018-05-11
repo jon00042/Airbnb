@@ -11,18 +11,18 @@
 <div id="dates-div" style="display: none;">
     <div style="height: calc(100vh - 80px - 64px - 78px); overflow: scroll; text-align: center">
         <div style="display: inline-block; margin-top: 20px; margin-right: 10%;">
-            <div style="margin-bottom: 20px; font-weight: bold; color: rgb(0, 132, 137);">FROM</div>
+            <div class="white-on-green" style="margin-bottom: 20px; font-weight: bold;">FROM</div>
             <div style="font-size: 15px;" id="dp_from"></div>
         </div>
         <div style="display: inline-block; margin-top: 20px; margin-right: 10%;">
-            <div style="margin-bottom: 20px; font-weight: bold; color: rgb(0, 132, 137);">TO</div>
+            <div class="white-on-green" style="margin-bottom: 20px; font-weight: bold;">TO</div>
             <div style="font-size: 15px;" id="dp_to"></div>
         </div>
     </div>
-    <div style="font-size: 19px; height: 78px; border-top: 1px solid rgb(219, 219, 219); text-align: center; float: center;">
-        <div style="display: inline-block; width: 28%; height: 50px; padding-top: 20px;"><a id="reset" style="text-decoration: none; color: rgb(72, 72, 72); cursor: pointer;">Reset</a></div>
-        <div style="display: inline-block; width: 28%; height: 50px; padding-top: 20px;"><a id="cancel" style="text-decoration: none; color: rgb(72, 72, 72); cursor: pointer;">Cancel</a></div>
-        <div style="display: inline-block; width: 28%; height: 50px; padding-top: 10px;"><button id="apply" style="outline: none; font-size: 19px; color: white; background-color: rgb(0, 132, 137); width: 100px; height: 40px; border-radius: 4px; cursor: pointer;">Apply</button></div>
+    <div class="common-border-top" style="font-size: 19px; height: 78px; text-align: center; float: center;">
+        <div style="display: inline-block; width: 28%; height: 50px; padding-top: 20px;"><a id="reset" class="burgundy-on-white" style="text-decoration: none; cursor: pointer;">All Dates</a></div>
+        <div style="display: inline-block; width: 28%; height: 50px; padding-top: 20px;"><a id="cancel" class="black-on-white" style="text-decoration: none; cursor: pointer;">Cancel</a></div>
+        <div style="display: inline-block; width: 28%; height: 50px; padding-top: 10px;"><button id="apply" class="white-on-green" style="outline: none; font-size: 19px; width: 100px; height: 40px; border-radius: 4px; cursor: pointer;">Apply</button></div>
     </div>
 </div>
 
@@ -30,46 +30,46 @@
     <div style="height: calc(100vh - 80px - 64px - 78px); overflow: scroll; padding: 0 20px; font-weight: 300;">
         <div style="font-weight: 400; margin-bottom: 15px; margin-top: 20px;">Price range</div>
         <div>TODO</div>
-        <div style="border-top: 1px solid rgb(219, 219, 219); font-weight: 400; margin-top: 15px; padding-top: 15px; margin-bottom: 15px;">Home type</div>
+        <div class="common-border-top" style="font-weight: 400; margin-top: 15px; padding-top: 15px; margin-bottom: 15px;">Home type</div>
         {% for item in all_stay_types %}
             <div style="display: inline-block; width: 230px; white-space: nowrap;">
                 <label><input class="stay_type" style="zoom: 1.5;" type="checkbox" name="{{item}}">{{item}}</label>
             </div>
         {% endfor %}
-        <div style="border-top: 1px solid rgb(219, 219, 219); font-weight: 400; margin-top: 15px; padding-top: 15px; margin-bottom: 15px;">Rooms and beds</div>
+        <div class="common-border-top" style="font-weight: 400; margin-top: 15px; padding-top: 15px; margin-bottom: 15px;">Rooms and beds</div>
         <div>TODO</div>
-        <div style="border-top: 1px solid rgb(219, 219, 219); font-weight: 400; margin-top: 15px; padding-top: 15px; margin-bottom: 15px;">Amenities</div>
+        <div class="common-border-top" style="font-weight: 400; margin-top: 15px; padding-top: 15px; margin-bottom: 15px;">Amenities</div>
         {% for item in all_amenities %}
             <div style="display: inline-block; width: 230px; white-space: nowrap;">
                 <label><input class="amenities" style="zoom: 1.5;" type="checkbox" name="{{item}}">{{item}}</label>
             </div>
         {% endfor %}
-        <div style="border-top: 1px solid rgb(219, 219, 219); font-weight: 400; margin-top: 15px; padding-top: 15px; margin-bottom: 15px;">Facilities</div>
+        <div class="common-border-top" style="font-weight: 400; margin-top: 15px; padding-top: 15px; margin-bottom: 15px;">Facilities</div>
         {% for item in all_facilities %}
             <div style="display: inline-block; width: 230px; white-space: nowrap;">
                 <label><input class="facilities" style="zoom: 1.5;" type="checkbox" name="{{item}}">{{item}}</label>
             </div>
         {% endfor %}
-        <div style="border-top: 1px solid rgb(219, 219, 219); font-weight: 400; margin-top: 15px; padding-top: 15px; margin-bottom: 15px;">Property type</div>
+        <div class="common-border-top" style="font-weight: 400; margin-top: 15px; padding-top: 15px; margin-bottom: 15px;">Property type</div>
         {% for item in all_prop_types %}
             <div style="display: inline-block; width: 230px; white-space: nowrap;">
                 <label><input class="prop_type" style="zoom: 1.5;" type="checkbox" name="{{item}}">{{item}}</label>
             </div>
         {% endfor %}
-        <div style="border-top: 1px solid rgb(219, 219, 219); font-weight: 400; margin-top: 15px; padding-top: 15px; margin-bottom: 15px;">Unique homes</div>
+        <div class="common-border-top" style="font-weight: 400; margin-top: 15px; padding-top: 15px; margin-bottom: 15px;">Unique homes</div>
         {% for item in all_uniq_types %}
             <div style="display: inline-block; width: 230px; white-space: nowrap;">
                 <label><input class="uniq_type" style="zoom: 1.5;" type="checkbox" name="{{item}}">{{item}}</label>
             </div>
         {% endfor %}
-        <div style="border-top: 1px solid rgb(219, 219, 219); font-weight: 400; margin-top: 15px; padding-top: 15px; margin-bottom: 15px;">House rules</div>
+        <div class="common-border-top" style="font-weight: 400; margin-top: 15px; padding-top: 15px; margin-bottom: 15px;">House rules</div>
         <div>TODO</div>
         <div style="height: 20px;"></div>
     </div>
-    <div style="height: 78px; border-top: 1px solid rgb(219, 219, 219); text-align: center; float: center;">
-        <div style="display: inline-block; width: 28%; height: 50px; padding-top: 20px;"><a id="reset" style="text-decoration: none; color: rgb(72, 72, 72); cursor: pointer;">Reset</a></div>
-        <div style="display: inline-block; width: 28%; height: 50px; padding-top: 20px;"><a id="cancel" style="text-decoration: none; color: rgb(72, 72, 72); cursor: pointer;">Cancel</a></div>
-        <div style="display: inline-block; width: 28%; height: 50px; padding-top: 10px;"><button id="apply" style="outline: none; font-size: 19px; color: white; background-color: rgb(0, 132, 137); width: 100px; height: 40px; border-radius: 4px; cursor: pointer;">Apply</button></div>
+    <div class="common-border-top" style="height: 78px; text-align: center; float: center;">
+        <div style="display: inline-block; width: 28%; height: 50px; padding-top: 20px;"><a id="reset" class="burgundy-on-white" style="text-decoration: none; cursor: pointer;">No Filters</a></div>
+        <div style="display: inline-block; width: 28%; height: 50px; padding-top: 20px;"><a id="cancel" class="black-on-white" style="text-decoration: none; cursor: pointer;">Cancel</a></div>
+        <div style="display: inline-block; width: 28%; height: 50px; padding-top: 10px;"><button id="apply" class="white-on-green" style="outline: none; font-size: 19px; width: 100px; height: 40px; border-radius: 4px; cursor: pointer;">Apply</button></div>
     </div>
 </div>
 
@@ -78,15 +78,15 @@
     <div class="listing" id="{{listing.id}}">
         <a href="{% url 'main:listing' id=listing.id %}" target="_blank"><img src="/media/listings/{{listing.id}}/main.jpg"></a>
         <a href="{% url 'main:listing' id=listing.id %}" target="_blank">
-            <div style="color: rgb(165, 41, 3); font-size: 12px; font-weight: bold; padding-top: 5px;">
+            <div class="burgundy-on-white" style="font-size: 12px; font-weight: bold; padding-top: 5px;">
                 {% if listing.uniq_type %}
                     {{listing.stay_type_str}} in {{listing.uniq_type_str}}
                 {% else %}
                     {{listing.stay_type_str}}
                 {% endif %}
             </div>
-            <div style="color: rgb(72, 72, 72); font-size: 19px; font-weight: bold;">{{listing.name}}</div>
-            <div style="color: rgb(72, 72, 72); font-size: 15px; font-weight: 300;">From {{listing.price_per_night_str}} per night</div>
+            <div class="black-on-white" style="font-size: 19px; font-weight: bold;">{{listing.name}}</div>
+            <div class="black-on-white" style="font-size: 15px; font-weight: 300;">From {{listing.price_per_night_str}} per night</div>
         </a>
     </div>
     {% endfor %}
@@ -175,7 +175,12 @@
         });
 
         $("#criteria-bar").find("#dates").click(function(event) {
-            if ($("#dates-div-clone").length || $("#filters-div-clone").length) {
+            if ($("#filters-div-clone").length) {
+                return;
+            }
+
+            if ($("#dates-div-clone").length) {
+                $("#dates-div-clone").find("#cancel").trigger("click");
                 return;
             }
 
@@ -251,7 +256,12 @@
         });
 
         $("#criteria-bar").find("#filters").click(function(event) {
-            if ($("#dates-div-clone").length || $("#filters-div-clone").length) {
+            if ($("#dates-div-clone").length) {
+                return;
+            }
+
+            if ($("#filters-div-clone").length) {
+                $("#filters-div-clone").find("#cancel").trigger("click");
                 return;
             }
 

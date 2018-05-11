@@ -2,8 +2,8 @@
 
 {% block app %}
 
-<div style="overflow: scroll; height: calc(100vh - 80px - 70px); border: 1px solid white;">
-    <div style="width: 100%; height: 100%; max-height: 440px; background-size: cover; background-repeat: no-repeat; background-position: center center; background-image: url('/media/listings/{{listing.id}}/main.jpg')"></div>
+<div id="listings-div" style="overflow: scroll; border-top: 1px solid white;">
+    <div style="width: 100%; min-height: 400px; max-height: 400px; background-size: cover; background-repeat: no-repeat; background-position: center center; background-image: url('/media/listings/{{listing.id}}/main.jpg')"></div>
     <div style="font-size: 17px; padding-left: 20%; padding-right: 20%; padding-top: 20px;">
         <input type="hidden" id="lat" value="{{listing.geo_lat}}">
         <input type="hidden" id="lng" value="{{listing.geo_lng}}">
@@ -46,7 +46,7 @@
         <div style="margin-top: 15px; padding-top: 15px; border-top: 1px solid lightgrey;"></div>
     </div>
 </div>
-<div style="height: 70px; border-top: 1px solid lightgrey;">BOOK</div>
+<div id="footer-div" style="height: 70px; border-top: 1px solid lightgrey;">BOOK</div>
 
 {% endblock %}
 
@@ -72,8 +72,22 @@
         });
     }
 
+    function adjustSizes() {
+        console.log("window: " + $(window).height());
+        console.log("nav-bar: " + $(".nav-bar").height());
+        console.log("footer-div: " + $("#footer-div").height());
+        let height = $(window).height() - $(".nav-bar").height() - $("#footer-div").height();
+        console.log("listings-div orig: " + $("#listings-div").height());
+        $("#listings-div").height(height);
+        console.log("listings-div orig: " + $("#listings-div").height());
+    }
+
     $(document).ready(function() {
         $(".filter-bar").hide();
+        $(window).resize(function(event) {
+            adjustSizes();
+        });
+        adjustSizes();
     });
 </script>
 

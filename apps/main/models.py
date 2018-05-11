@@ -12,10 +12,9 @@ class User(models.Model):
 class Listing(models.Model):
     name = models.CharField(max_length=256)
     desc = models.TextField(null=True)
-    street_addr = models.CharField(max_length=1024)
-    postal_code = models.CharField(max_length=64)
-    country = models.CharField(max_length=128)
-    gps_coordinates = models.CharField(max_length=128, unique=True)
+    geo_url = models.CharField(max_length=1024, unique=True)
+    geo_json = models.TextField()
+    geo_coordinates = models.CharField(max_length=128, unique=True)
     stay_type = models.IntegerField()
     prop_type = models.IntegerField()
     uniq_type = models.IntegerField(null=True)
@@ -30,6 +29,14 @@ class Listing(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
     ################
     host_user = models.ForeignKey(User, related_name='host_listings', on_delete=models.PROTECT)
+    ################
+    @property
+    def geo_lat(self):
+        return self.geo_coordinates.split(':')[0]
+    ################
+    @property
+    def geo_lng(self):
+        return self.geo_coordinates.split(':')[1]
     ################
     @property
     def price_per_night_str(self):

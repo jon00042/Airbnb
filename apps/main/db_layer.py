@@ -3,11 +3,9 @@ import apps.main.models as m
 import datetime
 import dateutil.parser
 import django
-import json
 
 from django.db import transaction
 from django.db.models import Count
-from pprint import pprint
 
 def ensure_date(val):
     if  type(val) == datetime.date:
@@ -32,6 +30,13 @@ def get_user(email):
         return m.User.objects.get(email=email), None
     except m.User.DoesNotExist:
         return None, 'Login attempt failed!'
+    except Exception as ex:
+        print('{}: {}'.format(type(ex), ex))
+        return None, str(ex)
+
+def get_listing_by_geo_url(geo_url):
+    try:
+        return m.Listing.objects.get(geo_url=geo_url), None
     except Exception as ex:
         print('{}: {}'.format(type(ex), ex))
         return None, str(ex)

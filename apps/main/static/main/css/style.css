@@ -217,19 +217,40 @@ body {
     max-width: 100%;
 }
 
+.listing-image {
+    min-height: 40vh;
+    height: 40vh;
+    max-height: 40vh;
+}
+
 @media (min-width: 744px) {
     .listing {
         width: 45%;
+    }
+    .listing-image {
+        min-height: 400px;
+        height: 400px;
+        max-height: 400px;
     }
 }
 @media (min-width: 1128px) {
     .listing {
         width: 22%;
     }
+    .listing-image {
+        min-height: 400px;
+        height: 400px;
+        max-height: 400px;
+    }
 }
 @media (min-width: 1440px) {
     .listing {
         width: 17%;
+    }
+    .listing-image {
+        min-height: 400px;
+        height: 400px;
+        max-height: 400px;
     }
 }
 

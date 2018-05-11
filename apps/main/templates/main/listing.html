@@ -3,7 +3,7 @@
 {% block app %}
 
 <div id="listings-div" style="overflow: scroll; border-top: 1px solid white;">
-    <div style="width: 100%; min-height: 400px; max-height: 400px; background-size: cover; background-repeat: no-repeat; background-position: center center; background-image: url('/media/listings/{{listing.id}}/main.jpg')"></div>
+    <div class="listing-image" style="width: 100%; background-size: cover; background-repeat: no-repeat; background-position: center center; background-image: url('/media/listings/{{listing.id}}/main.jpg')"></div>
     <div style="font-size: 17px; padding-left: 20%; padding-right: 20%; padding-top: 20px;">
         <input type="hidden" id="lat" value="{{listing.geo_lat}}">
         <input type="hidden" id="lng" value="{{listing.geo_lng}}">
@@ -48,7 +48,7 @@
 </div>
 <div id="footer-div" style="height: 70px; border-top: 1px solid lightgrey;">
     <div style="text-align: center; margin-top: 10px;">
-        <button class="white-on-red" style="border-radius: 5px; font-size: 17px; width: 100px; height: 40px;">BOOK</button>
+        <button class="white-on-red" style="outline: none; border-radius: 5px; font-size: 17px; width: 100px; height: 40px;">BOOK</button>
     </div>
 </div>
 

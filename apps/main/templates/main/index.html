@@ -346,6 +346,7 @@
                     $("#criteria-bar").find("#filters").text("Filters (" + checkedCount + ")");
                 } else {
                     $("#criteria-bar").find("#filters").addClass("black-on-white");
+                    $("#criteria-bar").find("#filters").text("Filters");
                 }
                 $("#listings-div").show();
                 setTimeout(function() { getListableIds(); }, 100);
